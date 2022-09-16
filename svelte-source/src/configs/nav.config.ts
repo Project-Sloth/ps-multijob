@@ -1,6 +1,6 @@
 import { NavItemsEnum } from './../enums/NavEnum';
 import type { INavItem } from '../interfaces/INavigation';
-import { Icons } from 'src/enums/IconsEnum';
+import { Icons } from './../enums/IconsEnum';
 
 export const NavItems: Array<INavItem> = [
 	{
