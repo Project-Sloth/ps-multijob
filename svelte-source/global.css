@@ -1,9 +1,25 @@
 * {
-  margin: 0;
-  padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
+html,
+body {
+	height: 100%;
+	width: 100%;
+	font-family: 'Roboto', sans-serif;
+}
+
+:root {
+	--color-green: #02f1b5;
+	--color-orange: #ff4545;
+	--color-darkestblue: #131121;
+	--color-darkerblue: #222033;
+	--color-darkblue: #424057;
+	--color-white: #ffffff;
+	--color-black: #000000;
+	--color-lightestgrey: #dadada;
+	--color-lightgrey: #cacaca;
+	--color-grey: #797979;
+	--font-color: rgba(var(--theme-white), 0.87);
 }
