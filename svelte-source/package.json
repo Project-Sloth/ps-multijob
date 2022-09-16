@@ -20,6 +20,7 @@
     "@unocss/reset": "^0.44.5",
     "html-minifier": "^4.0.0",
     "jsdom": "^20.0.0",
+    "sass": "^1.54.9",
     "svelte": "^3.49.0",
     "svelte-check": "^2.8.0",
     "svelte-preprocess": "^4.10.7",
