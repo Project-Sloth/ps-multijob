@@ -6,7 +6,7 @@
 	export let activeNavItem;
 </script>
 
-<nav class="w-[75px] min-h-screen nav float-right flex flex-col">
+<nav class="w-[60px] min-h-screen nav float-right flex flex-col">
 	<div class="ps-logo w-full h-[80px]" />
 	{#each NavItems as item}
 		<NavItem {item} bind:navItemSelected bind:activeNavItem />
