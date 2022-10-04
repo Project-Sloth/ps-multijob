@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { JobConfig } from './../configs/jobs.config';
-	import Jobs from './atoms/Jobs.svelte';
+	import Jobs from './Jobs.svelte';
 	export let activeNavItem: string;
 </script>
 
-<main class="w-[340px] min-h-screen block px-[28px] pt-[40px]">
+<main class="w-[380px] min-h-screen block px-[28px] pt-[40px]">
 	<div class="text-white">
 		<span class="category">CATEGORY</span> <br />
 		<span class="category-name text-white block mt-[-5px] font-medium"
