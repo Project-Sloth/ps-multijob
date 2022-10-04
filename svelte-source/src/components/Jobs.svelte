@@ -3,7 +3,6 @@
 	import type { IJobs } from '../interfaces/IJobs';
 	import JobDetail from './atoms/JobDetail.svelte';
 	import { JobDetails } from '../enums/JobEnum';
-	import fetchNui from 'src/utils/fetch';
 
 	export let job: IJobs;
 
@@ -37,7 +36,7 @@
 			{#if !onDuty}
 				<button
 					class="set-duty b-rd-[5px] py-[10px] font-medium text-black flex-1 w-full"
-					on:click={() => (onDuty = !onDuty)}
+					on:click={() => toggleJob(job)}
 				>
 					<i class={Icons.SelectJob} />
 					<span class="ml-[5px] ">SELECT</span>
@@ -54,7 +53,7 @@
 					<div class="flex-1">
 						<button
 							class="off-duty b-rd-[5px] py-[10px] font-medium flex-1 w-full"
-							on:click={() => () => toggleJob(job)}
+							on:click={() => toggleJob(job)}
 						>
 							<i class={Icons.OffDuty} />
 							<span class="ml-[5px] ">OFF DUTY</span>
