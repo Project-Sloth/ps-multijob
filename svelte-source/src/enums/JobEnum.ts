@@ -3,3 +3,7 @@ export enum JobDetails {
 	Rank = 'Rank',
 	Active = 'Active',
 }
+
+export enum JobStyleClasses {
+	Police = 'law-enforcement',
+}
