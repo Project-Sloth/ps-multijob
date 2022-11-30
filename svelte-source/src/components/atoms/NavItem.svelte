@@ -1,45 +1,33 @@
 <script lang="ts">
-	import type { INavItem } from '../../interfaces/INavigation';
+	import PanelStore from "../../stores/PanelStore";
 
-	export let item: INavItem;
-	export let navItemSelected: boolean;
-	export let activeNavItem;
-
-	$: activeNavItem = 'Whitelisted';
+	export let icon: any;
+	export let isActive: boolean;
+	export let name: string;
 
 	function navItemClicked(item: string): void {
-		activeNavItem = item;
-
-		navItemSelected = true;
+		if (isActive) {
+			PanelStore.setActive("");
+		} else {
+			PanelStore.setActive(item);
+		}
 	}
 </script>
 
-<div
-	on:click={() => navItemClicked(item.name)}
-	class="navitem w-full h-[60px] flex justify-center items-center cursor-pointer relative"
-	data-item={item.name}
+<div class={"navitem w-full h-[60px] flex justify-center items-center cursor-pointer duration-200 "+
+	(isActive ? "border-r-4 border-r-[#02f1b5] bg-[var(--color-darkestblue)]":"border-r-4 border-r-transparent")}
+	on:click={() => navItemClicked(name)}
 >
-	<i class="{item.icon} icon" />
-	{#if activeNavItem === item.name}
-		<span class="state w-1 h-full absolute right-0" />
-	{/if}
+	<div class="icon">
+		<svelte:component this={icon} color={isActive ? "#02f1b5" : "#7f7f7e"}/>
+	</div>
 </div>
 
-<style lang="scss">
+<style>
 	.icon {
-		font-size: 26px;
-		color: var(--color-grey);
+		width: 40%;
+		color: var(--color-lightestgrey);
 	}
-
-	.active {
-		color: var(--color-green);
-		background-color: var(--color-darkestblue);
-	}
-
-	.active-state {
-		background-color: var(--color-green);
-	}
-
 	.navitem:hover {
 		background-color: var(--color-darkestblue);
 	}

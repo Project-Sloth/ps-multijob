@@ -2,18 +2,19 @@
 	import CategoryMenu from './components/CategoryMenu.svelte';
 	import NavBar from './components/NavBar.svelte';
 	import { EventHandler } from './utils/eventHandler';
+	import DebugMode from './stores/debugStore';
+	import PanelStore from './stores/PanelStore';
+
+	const { panelActive } = PanelStore;
 
 	EventHandler();
-
-	let navItemSelected: boolean = true;
-	let activeNavItem: string;
 </script>
 
-<main class="min-h-screen flex justify-end">
-	{#if navItemSelected}
-		<CategoryMenu {activeNavItem} />
+<main class={"min-h-screen flex justify-end "+ (DebugMode ? "bg-dark-200": "")}>
+	{#if $panelActive != ""}
+		<CategoryMenu/>
 	{/if}
-	<NavBar bind:navItemSelected bind:activeNavItem />
+	<NavBar/>
 </main>
 
 <style>

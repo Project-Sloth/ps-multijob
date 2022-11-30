@@ -12,7 +12,7 @@ export default async function fetchNui(eventName: string, data: unknown = {}) {
       // @ts-ignore
       return window.GetParentResourceName();
     } catch(err) {
-      return "resource-name";
+      return "ps-multijob";
     }
   }
 

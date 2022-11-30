@@ -1,19 +1,23 @@
 <script lang="ts">
-	import { JobConfig } from './../configs/jobs.config';
-	import Jobs from './Jobs.svelte';
-	export let activeNavItem: string;
+	import JobCard from './JobCard.svelte';
+	import PanelStore from '../stores/PanelStore';
+	import JobStore from '../stores/JobStore';
+
+	const { panelActive } = PanelStore;
+	const { jobManifest } = JobStore;
 </script>
 
-<main class="w-[380px] min-h-screen block px-[28px] pt-[40px]">
+<main class="w-[380px] min-h-screen block px-[28px] pt-[40px] select-none">
 	<div class="text-white">
 		<span class="category">CATEGORY</span> <br />
-		<span class="category-name text-white block mt-[-5px] font-medium"
-			>Whitelist Jobs</span
-		>
+		<span class="category-name text-white block mt-[-5px] font-medium capitalize">
+			{$panelActive} Jobs
+		</span>
 	</div>
 
-	{#each JobConfig as job}
-		<Jobs {job} />
+	{#each $jobManifest[$panelActive] as job}
+		<JobCard name={job.name} icon={job.icon} description={job.description}
+			salary={job.salary} rank={job.rank} active={job.active} />
 	{/each}
 </main>
 
