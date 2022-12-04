@@ -1,7 +1,5 @@
-CREATE TABLE `multijobs` (
+CREATE TABLE IF NOT EXISTS `multijobs` (
   `citizenid` varchar(100) NOT NULL,
-  `job` varchar(100) NOT NULL,
-  `grade` int(11) NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
+  `jobdata` text DEFAULT NULL,
+  PRIMARY KEY (`citizenid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

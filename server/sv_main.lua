@@ -1,29 +1,44 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-local function AddJob(citizenid, job, grade)
-    MySQL.Sync.execute("INSERT INTO `multijobs`(`citizenid`, `job`, `grade`) VALUES (@citizenid, @job, @grade)",{
-        ["@citizenid"] = citizenid, 
-        ["@job"] = job, 
-        ["@grade"] = grade
-    })
-end
-
-local function RemoveJob(citizenid, job, grade)
-    MySQL.Sync.execute("DELETE FROM `multijobs` WHERE citizenid = @citizenid AND job = @job AND grade = @grade",{
-        ["@citizenid"] = citizenid,
-        ["@job"] = job, 
-        ["@grade"] = grade
-    })
-end
-
 local function GetJobs(citizenid)
     local p = promise.new()
-    MySQL.Async.fetchAll("SELECT * FROM multijobs WHERE citizenid = @citizenid",{
+    MySQL.Async.fetchAll("SELECT jobdata FROM multijobs WHERE citizenid = @citizenid",{
         ["@citizenid"] = citizenid
     }, function(jobs)
+        if jobs ~= "[]" then
+            jobs = json.decode(jobs[1].jobdata)
+        end
         p:resolve(jobs)
     end)
     return Citizen.Await(p)
+end
+    
+
+local jobdata = {}
+
+local function AddJob(citizenid, job, grade)
+    if jobdata[citizenid] == nil then
+        jobdata[citizenid] = {}
+    end
+    jobdata[citizenid][job] = grade
+    MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
+        citizenid = citizenid,
+        jobdata = json.encode(jobdata[citizenid]),
+    })
+end
+
+local function RemoveJob(citizenid, rjob, rgrade)
+    local jobs = GetJobs(citizenid)
+    for job, grade in pairs(jobs) do
+        if job == rjob and grade == rgrade then
+            jobs[job] = nil
+            break
+        end
+    end
+    MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
+        citizenid = citizenid,
+        jobdata = json.encode(jobs),
+    })
 end
 
 QBCore.Commands.Add('removejob', 'Remove Multi Job (Admin Only)', { { name = 'id', help = 'ID of player' }, { name = 'job', help = 'Job Name' }, { name = 'grade', help = 'Job Grade' } }, false, function(source, args)
@@ -86,25 +101,25 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             active[xPlayer.PlayerData.job.name] = active[xPlayer.PlayerData.job.name] + 1
         end
     end
-    for k, v in pairs(jobs) do
-        local online = active[v.job]
+    for job, grade in pairs(jobs) do
+        local online = active[job]
         if online == nil then
             online = 0
         end
-        job = {
-            name = v.job,
-            grade = v.grade,
-            description = Config.Descriptions[v.job],
-            label = QBCore.Shared.Jobs[v.job].label,
-            grade_label = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].name,
-            salary = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].payment,
+        jobs = {
+            name = job,
+            grade = grade,
+            description = Config.Descriptions[job],
+            label = QBCore.Shared.Jobs[job].label,
+            grade_label = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
+            salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
             active = online,
             duty = Player.PlayerData.job.onduty, -- hopefully sends duty to ui
         }
-        if Config.WhitelistJobs[v.job] then
-            whitelistedjobs[#whitelistedjobs+1] = job
+        if Config.WhitelistJobs[job] then
+            whitelistedjobs[#whitelistedjobs+1] = jobs
         else
-            civjobs[#civjobs+1] = job
+            civjobs[#civjobs+1] = jobs
         end
         multijobs = {
             whitelist = whitelistedjobs,
