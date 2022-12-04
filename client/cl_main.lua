@@ -34,6 +34,12 @@ RegisterNUICallback('removejob', function(data, cb)
     TriggerServerEvent("ps-multijob:removeJob", data["name"], data["grade"])
 end)
 
+RegisterNUICallback('toggleduty', function(data, cb)
+    cb({})
+    -- to do, add toggle sync
+    TriggerServerEvent("QBCore:ToggleDuty")
+end)
+
 
 
 -- Command Code

@@ -73,7 +73,6 @@ end, 'admin')
 QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
     local jobs = GetJobs(Player.PlayerData.citizenid)
-    print(jobs)
     local multijobs = {}
     local whitelistedjobs = {}
     local civjobs = {}
@@ -81,11 +80,10 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
     local job = {}
     local Players = QBCore.Functions.GetPlayers()
     for i = 1, #Players, 1 do
-        local Player = QBCore.Functions.GetPlayer(Players[i])
-        if active[Player.PlayerData.job.name] ~= nil then
-            active[Player.PlayerData.job.name] = active[Player.PlayerData.job.name] + 1
-        else
-            active[Player.PlayerData.job.name] = 1
+        local xPlayer = QBCore.Functions.GetPlayer(Players[i])
+        active[xPlayer.PlayerData.job.name] = 0
+        if active[xPlayer.PlayerData.job.name] and xPlayer.PlayerData.job.onduty then
+            active[xPlayer.PlayerData.job.name] = active[xPlayer.PlayerData.job.name] + 1
         end
     end
     for k, v in pairs(jobs) do
@@ -93,7 +91,6 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
         if online == nil then
             online = 0
         end
-        -- local whitelistedjob = false
         job = {
             name = v.job,
             grade = v.grade,
@@ -102,14 +99,13 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             grade_label = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].name,
             salary = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].payment,
             active = online,
+            duty = Player.PlayerData.job.onduty, -- hopefully sends duty to ui
         }
         if Config.WhitelistJobs[v.job] then
-            -- whitelistedjob = true
             whitelistedjobs[#whitelistedjobs+1] = job
         else
             civjobs[#civjobs+1] = job
         end
-        -- print(type(v.grade))
         multijobs = {
             whitelist = whitelistedjobs,
             civilian = civjobs,
@@ -122,9 +118,7 @@ RegisterNetEvent("ps-multijob:changeJob",function(job, grade)
     local source = source
     local Player = QBCore.Functions.GetPlayer(source)
     local jobs = GetJobs(Player.PlayerData.citizenid)
-    print(jobs)
     for k, v in pairs(jobs) do
-        print(k,v)
         if job == v.job and grade == v.grade then
             Player.Functions.SetJob(job, grade)
         end
