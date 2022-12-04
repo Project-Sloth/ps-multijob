@@ -97,6 +97,7 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
         job = {
             name = v.job,
             grade = v.grade,
+            description = Config.Descriptions[v.job],
             label = QBCore.Shared.Jobs[v.job].label,
             grade_label = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].name,
             salary = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].payment,
