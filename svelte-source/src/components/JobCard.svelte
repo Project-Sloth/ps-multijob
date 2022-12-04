@@ -21,7 +21,7 @@
 	const { activeJob, setActiveJob, setOffDuty } = JobStore;
 
 	let onDuty: boolean = false;
-	$: onDuty = $activeJob == name;
+	$: onDuty = $activeJob == nuiName;
 
 </script>
 
@@ -49,7 +49,7 @@
 		<div class="job-select">
 			{#if !onDuty}
 				<button class="bg-[var(--color-green)] flex flex-row h-11 items-center justify-center gap-1 b-rd-[5px] py-[10px] font-medium text-black flex-1 w-full"
-					on:click={() => setActiveJob(name, nuiName, nuiRank)}
+					on:click={() => setActiveJob(nuiName, nuiName, nuiRank)}
 				>
 					<div class="w-4">
 						<svelte:component this={SelectSVG} />
