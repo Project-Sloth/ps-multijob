@@ -5,7 +5,7 @@ local function GetJobs(citizenid)
     MySQL.Async.fetchAll("SELECT jobdata FROM multijobs WHERE citizenid = @citizenid",{
         ["@citizenid"] = citizenid
     }, function(jobs)
-        if jobs ~= "[]" then
+        if jobs[1] and jobs ~= "[]" then
             jobs = json.decode(jobs[1].jobdata)
         end
         p:resolve(jobs)
@@ -13,8 +13,14 @@ local function GetJobs(citizenid)
     return Citizen.Await(p)
 end
     
-
 local jobdata = {}
+
+RegisterNetEvent("QBCore:Server:OnPlayerLoaded", function()
+    local Player = QBCore.Functions.GetPlayer(source)
+    jobdata[Player.PlayerData.citizenid] = GetJobs(Player.PlayerData.citizenid)
+    print(jobdata[Player.PlayerData.citizenid])
+    for k,v in pairs(jobdata) do print(k,v) end
+end)
 
 local function AddJob(citizenid, job, grade)
     if jobdata[citizenid] == nil then
