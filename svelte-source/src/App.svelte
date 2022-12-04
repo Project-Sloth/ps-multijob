@@ -8,6 +8,7 @@
 	const { panelActive, show } = PanelStore;
 
 	EventHandler();
+	document.onkeyup = PanelStore.handleKeyUp;
 </script>
 
 {#if $show}

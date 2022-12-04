@@ -33,6 +33,11 @@ const store = () => {
   }
 
   const methods = {
+    handleKeyUp(data) {
+      if (data.key == "Escape") {
+        methods.setShow(false);
+      }
+    },
     setActive(name: string) {
       PanelStore.panelActive.set(name);
     },

@@ -73,14 +73,12 @@ const mockJobManifest: JobManifest = {
 }
 
 interface JobState {
-  show: Writable<boolean>;
   jobManifest: Writable<JobManifest>;
   activeJob: Writable<string>;
 }
 
 const store = () => {
   const JobStore: JobState = {
-    show: writable(false),
     jobManifest: writable(mockJobManifest),
     activeJob: writable(""),
   }
@@ -89,7 +87,6 @@ const store = () => {
     receiveOpenMessage(data: nuiOpenMessage) {
       JobStore.jobManifest.set(data.jobs);
       JobStore.activeJob.set(data.activeJob);
-      JobStore.show.set(true);
     },
     setActiveJob(jobName: string) {
       JobStore.activeJob.set(jobName);
