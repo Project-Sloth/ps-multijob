@@ -1,4 +1,6 @@
 import { onMount, onDestroy } from "svelte";
+import JobStore from '../stores/JobStore';
+import PanelStore from '../stores/PanelStore';
 
 interface nuiMessage {
   data: {
@@ -11,6 +13,10 @@ interface nuiMessage {
 export function EventHandler() {
   function mainEvent(event: nuiMessage) {
     switch (event.data.action) {
+      case "sendjobs":
+        JobStore.receiveOpenMessage(event.data as any);
+        PanelStore.setShow(true);
+        break;
     }
   }
 

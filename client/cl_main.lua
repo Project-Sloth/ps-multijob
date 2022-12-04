@@ -9,33 +9,60 @@ local function GetJobs()
 end
 
 local function OpenUI()
-    local job = QBCore.Functions.GetPlayerData().job
-    local jobs = GetJobs()
-    local menuData = {
-        {
-            header = "My Jobs",
-            isMenuHeader = true,
-        },
-    }
-    for k,v in pairs(jobs) do 
-        local selected = false
-        if v["name"] == job["name"] then selected = true end
-        menuData[#menuData+1] = {
-            id = #menuData,
-            header = v["label"],
-            txt = ("Grade: %s | Salary: $%s | Selected: %s | Active: %s"):format(v["grade_label"], v["salary"], selected, v["active"]),
-            params = {
-                event = "ps-multijob:selectJob",
-                args = {
-                    job = v["name"],
-                    grade = v["grade"],
-                    label = ("%s %s"):format(v["label"], v["grade_label"]),
-                }
-            }
-        }
-    end
-    exports['qb-menu']:openMenu(menuData)
+    -- local job = QBCore.Functions.GetPlayerData().job
+    -- local jobs = GetJobs()
+    -- local menuData = {
+    --     {
+    --         header = "My Jobs",
+    --         isMenuHeader = true,
+    --     },
+    -- }
+    -- for k,v in pairs(jobs) do 
+    --     local selected = false
+    --     if v["name"] == job["name"] then selected = true end
+    --     menuData[#menuData+1] = {
+    --         id = #menuData,
+    --         header = v["label"],
+    --         txt = ("Grade: %s | Salary: $%s | Selected: %s | Active: %s"):format(v["grade_label"], v["salary"], selected, v["active"]),
+    --         params = {
+    --             event = "ps-multijob:selectJob",
+    --             args = {
+    --                 job = v["name"],
+    --                 grade = v["grade"],
+    --                 label = ("%s %s"):format(v["label"], v["grade_label"]),
+    --             }
+    --         }
+    --     }
+    -- end
+    -- exports['qb-menu']:openMenu(menuData)
 end
+
+
+-- SendNuiMessage({
+--     whitelist = true
+--     name = "police"
+--     label = "Law Enforcement"
+--     salary = 250
+--     grade_label = "Regular",
+--     grade = 0,
+--     active = 0,
+-- })
+
+--[[
+
+["grade_label"] = "Recruit"
+["salary"] = "100"
+
+]]
+
+RegisterCommand("test", function()
+    local job = QBCore.Functions.GetPlayerData().job
+    SendNUIMessage({
+        action = 'sendjobs', -- action
+        activejob = job["name"], -- string
+        jobs = GetJobs(), -- table
+    })
+end)
 
 RegisterNetEvent("ps-multijob:selectJob", function(data)
     local job = QBCore.Functions.GetPlayerData().job

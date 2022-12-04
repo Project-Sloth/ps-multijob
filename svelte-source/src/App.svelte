@@ -5,17 +5,19 @@
 	import DebugMode from './stores/debugStore';
 	import PanelStore from './stores/PanelStore';
 
-	const { panelActive } = PanelStore;
+	const { panelActive, show } = PanelStore;
 
 	EventHandler();
 </script>
 
-<main class={"min-h-screen flex justify-end "+ (DebugMode ? "bg-dark-200": "")}>
+{#if $show}
+<main class={"min-h-screen flex justify-end "+ (DebugMode ? "bg-dark-200": "bg-transparent")}>
 	{#if $panelActive != ""}
 		<CategoryMenu/>
 	{/if}
 	<NavBar/>
 </main>
+{/if}
 
 <style>
 </style>

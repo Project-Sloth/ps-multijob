@@ -3,33 +3,46 @@ import fetchNUI from '../utils/fetch';
 
 interface Job {
   name: string;
+  label: string;
   description: string;
   salary: number;
-  rank: string;
+  grade_label: string;
+  grade: number;
   active: number;
   icon: any;
 }
 
 type JobManifest = {
-  [key: string]: Array<Job>
+  "whitelist": Array<Job>;
+  "civilian": Array<Job>;
+}
+
+interface nuiOpenMessage {
+  action: string;
+  activeJob: string;
+  jobs: JobManifest;
 }
 
 const mockJobManifest: JobManifest = {
   "whitelist": [
     {
       name: "police person",
+      label: "blah",
       description: `Generate Lorem lpsum placeholder text.
       Select the number of characters, words, sentences or paragraphs, and hit generate!`,
       salary: 250,
-      rank: "Regular",
+      grade_label: "Regular",
+      grade: 0,
       active: 0,
       icon: "",
     },
     {
       name: "police chief",
+      label: "blah",
       description: "Blah blah blah",
       salary: 500,
-      rank: "Boss",
+      grade_label: "Boss",
+      grade: 0,
       active: 1,
       icon: "",
     },
@@ -37,48 +50,57 @@ const mockJobManifest: JobManifest = {
   "civilian": [
     {
       name: "taxi driver",
+      label: "blah",
       description: `Generate Lorem lpsum placeholder text.
         Select the number of characters, words, sentences or paragraphs, and hit generate!`,
       salary: 150,
-      rank: "Regular",
+      grade_label: "Regular",
+      grade: 0,
       active: 0,
       icon: "",
     },
     {
       name: "murdershot cashier",
+      label: "blah",
       description: "Take people's order and serve them food",
       salary: 100,
-      rank: "Cashier",
+      grade_label: "Cashier",
+      grade: 0,
       active: 0,
       icon: "",
     }
   ],
 }
 
-interface PanelState {
+interface JobState {
   show: Writable<boolean>;
   jobManifest: Writable<JobManifest>;
   activeJob: Writable<string>;
 }
 
 const store = () => {
-  const PanelStore: PanelState = {
+  const JobStore: JobState = {
     show: writable(false),
     jobManifest: writable(mockJobManifest),
     activeJob: writable(""),
   }
 
   const methods = {
+    receiveOpenMessage(data: nuiOpenMessage) {
+      JobStore.jobManifest.set(data.jobs);
+      JobStore.activeJob.set(data.activeJob);
+      JobStore.show.set(true);
+    },
     setActiveJob(jobName: string) {
-      PanelStore.activeJob.set(jobName);
+      JobStore.activeJob.set(jobName);
     },
     setOffDuty() {
-      PanelStore.activeJob.set("");
+      JobStore.activeJob.set("");
     }
   }
 
   return {
-    ...PanelStore,
+    ...JobStore,
     ...methods
   }
 }

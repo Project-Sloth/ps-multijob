@@ -35,6 +35,9 @@ const store = () => {
   const methods = {
     setActive(name: string) {
       PanelStore.panelActive.set(name);
+    },
+    setShow(show: boolean) {
+      PanelStore.show.set(show);
     }
   }
 

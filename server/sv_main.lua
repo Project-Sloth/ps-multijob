@@ -75,7 +75,10 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
     local jobs = GetJobs(Player.PlayerData.citizenid)
     print(jobs)
     local multijobs = {}
+    local whitelistedjobs = {}
+    local civjobs = {}
     local active = {}
+    local job = {}
     local Players = QBCore.Functions.GetPlayers()
     for i = 1, #Players, 1 do
         local Player = QBCore.Functions.GetPlayer(Players[i])
@@ -90,13 +93,25 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
         if online == nil then
             online = 0
         end
-        multijobs[#multijobs+1] = {
+        -- local whitelistedjob = false
+        job = {
             name = v.job,
             grade = v.grade,
             label = QBCore.Shared.Jobs[v.job].label,
             grade_label = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].name,
             salary = QBCore.Shared.Jobs[v.job].grades[tostring(v.grade)].payment,
-            active = online
+            active = online,
+        }
+        if Config.WhitelistJobs[v.job] then
+            -- whitelistedjob = true
+            whitelistedjobs[#whitelistedjobs+1] = job
+        else
+            civjobs[#civjobs+1] = job
+        end
+        -- print(type(v.grade))
+        multijobs = {
+            whitelist = whitelistedjobs,
+            civilian = civjobs,
         }
     end
     cb(multijobs)
