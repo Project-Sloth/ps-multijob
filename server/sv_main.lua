@@ -18,8 +18,6 @@ local jobdata = {}
 RegisterNetEvent("QBCore:Server:OnPlayerLoaded", function()
     local Player = QBCore.Functions.GetPlayer(source)
     jobdata[Player.PlayerData.citizenid] = GetJobs(Player.PlayerData.citizenid)
-    print(jobdata[Player.PlayerData.citizenid])
-    for k,v in pairs(jobdata) do print(k,v) end
 end)
 
 local function AddJob(citizenid, job, grade)
@@ -98,7 +96,7 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
     local whitelistedjobs = {}
     local civjobs = {}
     local active = {}
-    local job = {}
+    local getjobs = {}
     local Players = QBCore.Functions.GetPlayers()
     for i = 1, #Players, 1 do
         local xPlayer = QBCore.Functions.GetPlayer(Players[i])
@@ -112,7 +110,7 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
         if online == nil then
             online = 0
         end
-        jobs = {
+        getjobs = {
             name = job,
             grade = grade,
             description = Config.Descriptions[job],
@@ -123,9 +121,9 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             duty = Player.PlayerData.job.onduty, -- hopefully sends duty to ui
         }
         if Config.WhitelistJobs[job] then
-            whitelistedjobs[#whitelistedjobs+1] = jobs
+            whitelistedjobs[#whitelistedjobs+1] = getjobs
         else
-            civjobs[#civjobs+1] = jobs
+            civjobs[#civjobs+1] = getjobs
         end
         multijobs = {
             whitelist = whitelistedjobs,
@@ -135,12 +133,12 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
     cb(multijobs)
 end)
 
-RegisterNetEvent("ps-multijob:changeJob",function(job, grade)
+RegisterNetEvent("ps-multijob:changeJob",function(cjob, cgrade)
     local source = source
     local Player = QBCore.Functions.GetPlayer(source)
     local jobs = GetJobs(Player.PlayerData.citizenid)
-    for k, v in pairs(jobs) do
-        if job == v.job and grade == v.grade then
+    for job, grade in pairs(jobs) do
+        if cjob == job and cgrade == grade then
             Player.Functions.SetJob(job, grade)
         end
     end
@@ -167,20 +165,15 @@ end)
 RegisterNetEvent('QBCore:Server:OnJobUpdate', function(source, newJob)
     local source = source
     local Player = QBCore.Functions.GetPlayer(source)
-    MySQL.Async.fetchAll("SELECT * FROM multijobs WHERE citizenid = @citizenid",{
-        ["@citizenid"] = Player.PlayerData.citizenid
-    },function(jobs)
-        local add = true
-        local amount = 0
-        local job = newJob
-        for _, v in pairs(jobs) do
-            if job.name == v.job then
-                add = false
-            end
-            amount = amount + 1
+    local jobs = GetJobs(Player.PlayerData.citizenid)
+    local amount = 0
+    local setjob = newJob
+    for k,v in pairs(jobs) do
+        amount = amount + 1
+    end
+    if amount < Config.MaxJobs and not Config.IgnoredJobs[setjob.name] then
+        if not jobs[setjob.name] then
+            AddJob(Player.PlayerData.citizenid, setjob.name, setjob.grade.level)
         end
-        if add and amount < Config.MaxJobs and Config.IgnoredJobs[job] then
-            AddJob(Player.PlayerData.citizenid, job.name, job.grade.level)
-        end
-    end)
+    end
 end)
