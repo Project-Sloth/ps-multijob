@@ -1,4 +1,6 @@
 # ps-multijob
+![image](https://user-images.githubusercontent.com/82112471/205506429-6e86cadc-985c-488a-9dce-78a6b5aec1bb.png)
+
 A script designed with a sleek and modern design for being able to display your current jobs as well as switching between them.
 
 # Features
