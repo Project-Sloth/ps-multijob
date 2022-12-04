@@ -27,5 +27,3 @@ Config.Descriptions = {
 	["vineyard"] = "Get them vines",
 	["hotdog"] = "Sell them glizzys",
 }
-
--- citizenid string - jobinfo table
