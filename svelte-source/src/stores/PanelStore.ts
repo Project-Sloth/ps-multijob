@@ -36,6 +36,7 @@ const store = () => {
     handleKeyUp(data) {
       if (data.key == "Escape") {
         methods.setShow(false);
+        fetchNUI("closemenu", null);
       }
     },
     setActive(name: string) {

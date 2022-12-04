@@ -12,9 +12,9 @@ local function OpenUI()
     local job = QBCore.Functions.GetPlayerData().job
     SetNuiFocus(true,true)
     SendNUIMessage({
-        action = 'sendjobs', -- actyion
+        action = 'sendjobs', -- action
         activeJob = job["name"], -- string
-        jobs = GetJobs(), -- talbe
+        jobs = GetJobs(), -- table
     })
 end
 
@@ -22,6 +22,11 @@ end
 RegisterNUICallback('selectjob', function(data, cb)
     cb({})
     TriggerServerEvent("ps-multijob:changeJob", data["name"], data["grade"])
+end)
+
+RegisterNUICallback('closemenu', function(data, cb)
+    cb({})
+    SetNuiFocus(false,false)
 end)
 
 RegisterNUICallback('removejob', function(data, cb)
