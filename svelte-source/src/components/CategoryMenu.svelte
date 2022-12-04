@@ -16,8 +16,8 @@
 	</div>
 
 	{#each $jobManifest[$panelActive] as job}
-		<JobCard name={job.name} icon={job.icon} description={job.description}
-			salary={job.salary} rank={job.rank} active={job.active} />
+		<JobCard name={job.label} nuiName={job.name} nuiRank={job.grade} icon={job.icon} description={job.description}
+			salary={job.salary} rank={job.grade_label} active={job.active} />
 	{/each}
 </main>
 

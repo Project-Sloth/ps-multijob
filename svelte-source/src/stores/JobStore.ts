@@ -84,12 +84,23 @@ const store = () => {
   }
 
   const methods = {
+    deleteJob(jobName: string, nuiName: string, nuiRank: string) {
+      // TODO: need to remove job from our current arrays
+      fetchNUI("removejob", {
+        name: nuiName,
+        grade: nuiRank,
+      });
+    },
     receiveOpenMessage(data: nuiOpenMessage) {
       JobStore.jobManifest.set(data.jobs);
       JobStore.activeJob.set(data.activeJob);
     },
-    setActiveJob(jobName: string) {
+    setActiveJob(jobName: string, nuiName: string, nuiRank: string) {
       JobStore.activeJob.set(jobName);
+      fetchNUI("selectjob", {
+        name: nuiName,
+        grade: nuiRank,
+      });
     },
     setOffDuty() {
       JobStore.activeJob.set("");

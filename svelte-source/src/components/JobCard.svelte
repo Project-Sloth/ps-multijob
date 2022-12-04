@@ -10,10 +10,12 @@
 	import JobStore from '../stores/JobStore';
 
 	export let name: string;
+	export let nuiName: string;
 	export let icon: any;
 	export let description: string;
 	export let salary: number;
 	export let rank: string;
+	export let nuiRank: string;
 	export let active: number;
 
 	const { activeJob, setActiveJob, setOffDuty } = JobStore;
@@ -44,10 +46,10 @@
 		<JobDetail icon={ActiveSVG} detail="Active" value={active} svgSize="w-[1.1rem]"/>
 	</div>
 	<div class="mt-8">
-		<div class="job-select {name}">
+		<div class="job-select">
 			{#if !onDuty}
 				<button class="bg-[var(--color-green)] flex flex-row h-11 items-center justify-center gap-1 b-rd-[5px] py-[10px] font-medium text-black flex-1 w-full"
-					on:click={() => setActiveJob(name)}
+					on:click={() => setActiveJob(name, nuiName, nuiRank)}
 				>
 					<div class="w-4">
 						<svelte:component this={SelectSVG} />

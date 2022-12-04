@@ -9,6 +9,35 @@ local function GetJobs()
 end
 
 local function OpenUI()
+    local job = QBCore.Functions.GetPlayerData().job
+    SetNuiFocus(true,true)
+    SendNUIMessage({
+        action = 'sendjobs', -- actyion
+        activeJob = job["name"], -- string
+        jobs = GetJobs(), -- talbe
+    })
+end
+
+
+RegisterNUICallback('selectjob', function(data, cb)
+    cb({})
+    TriggerServerEvent("ps-multijob:changeJob", data["name"], data["grade"])
+end)
+
+RegisterNUICallback('removejob', function(data, cb)
+    cb({})
+    TriggerServerEvent("ps-multijob:removeJob", data["name"], data["grade"])
+end)
+
+
+
+-- Command Code
+RegisterCommand("jobmenu", OpenUI)
+RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "l")
+TriggerEvent('chat:removeSuggestion', '/jobmenu')
+
+
+-- local function OpenUI()
     -- local job = QBCore.Functions.GetPlayerData().job
     -- local jobs = GetJobs()
     -- local menuData = {
@@ -35,88 +64,45 @@ local function OpenUI()
     --     }
     -- end
     -- exports['qb-menu']:openMenu(menuData)
-end
+-- end
 
-
--- SendNuiMessage({
---     whitelist = true
---     name = "police"
---     label = "Law Enforcement"
---     salary = 250
---     grade_label = "Regular",
---     grade = 0,
---     active = 0,
--- })
-
---[[
-
-["grade_label"] = "Recruit"
-["salary"] = "100"
-
-]]
-
-RegisterCommand("test", function()
-    local job = QBCore.Functions.GetPlayerData().job
-    SendNUIMessage({
-        action = 'sendjobs', -- action
-        activejob = job["name"], -- string
-        jobs = GetJobs(), -- table
-    })
-end)
-
-RegisterNetEvent("ps-multijob:selectJob", function(data)
-    local job = QBCore.Functions.GetPlayerData().job
-    if data["job"] == job["name"] then return end
-    exports['qb-menu']:openMenu({
-        {
-            header = data["label"],
-            isMenuHeader = true,
-        },
-        {
-            id = 1,
-            header = "Select",
-            txt = "",
-            params = {
-                isAction = true,
-                event = function()
-                    TriggerServerEvent("ps-multijob:changeJob", data["job"], data["grade"])
-                end,
-                args = {
-                    job = data["job"],
-                    grade = data["grade"]
-                }
-            }
-        },
-        {
-            id = 2,
-            header = "Remove",
-            txt = "",
-            params = {
-                isAction = true,
-                event = function()
-                    TriggerServerEvent("ps-multijob:removeJob", data["job"], data["grade"])
-                end,
-                args = {
-                    job = data["job"],
-                    grade = data["grade"]
-                }
-            }
-        }
-    })
-end)
-
--- Command Code
-RegisterCommand("jobmenu", OpenUI)
-RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "l")
-TriggerEvent('chat:removeSuggestion', '/jobmenu')
-
-TriggerEvent('chat:addSuggestion', '/removejob', 'Community Service (Police Only)', {
-    { name="ID", help="Player ID" },
-    { name="Job", help="Job Name" },
-    { name="Grade", help="Job Grade" },
-})
-TriggerEvent('chat:addSuggestion', '/addjob', 'Community Service (Police Only)', {
-    { name="ID", help="Player ID" },
-    { name="Job", help="Job Name" },
-    { name="Grade", help="Job Grade" },
-})
+-- RegisterNetEvent("ps-multijob:selectJob", function(data)
+--     local job = QBCore.Functions.GetPlayerData().job
+--     if data["job"] == job["name"] then return end
+--     exports['qb-menu']:openMenu({
+--         {
+--             header = data["label"],
+--             isMenuHeader = true,
+--         },
+--         {
+--             id = 1,
+--             header = "Select",
+--             txt = "",
+--             params = {
+--                 isAction = true,
+--                 event = function()
+--                     TriggerServerEvent("ps-multijob:changeJob", data["job"], data["grade"])
+--                 end,
+--                 args = {
+--                     job = data["job"],
+--                     grade = data["grade"]
+--                 }
+--             }
+--         },
+--         {
+--             id = 2,
+--             header = "Remove",
+--             txt = "",
+--             params = {
+--                 isAction = true,
+--                 event = function()
+--                     TriggerServerEvent("ps-multijob:removeJob", data["job"], data["grade"])
+--                 end,
+--                 args = {
+--                     job = data["job"],
+--                     grade = data["grade"]
+--                 }
+--             }
+--         }
+--     })
+-- end)
