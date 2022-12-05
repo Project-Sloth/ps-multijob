@@ -5,7 +5,6 @@ local function GetJobs(citizenid)
     MySQL.Async.fetchAll("SELECT jobdata FROM multijobs WHERE citizenid = @citizenid",{
         ["@citizenid"] = citizenid
     }, function(jobs)
-        print(jobs, jobs[1])
         if jobs[1] and jobs ~= "[]" then
             jobs = json.decode(jobs[1].jobdata)
         else

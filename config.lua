@@ -8,6 +8,8 @@ Config.WhitelistJobs = {
 	["police"] = true,
 	["ambulance"] = true,
 	["mechanic"] = true,
+	["judge"] = true,
+	["lawyer"] = true,
 }
 
 Config.Descriptions = {
