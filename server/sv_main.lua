@@ -5,29 +5,30 @@ local function GetJobs(citizenid)
     MySQL.Async.fetchAll("SELECT jobdata FROM multijobs WHERE citizenid = @citizenid",{
         ["@citizenid"] = citizenid
     }, function(jobs)
+        print(jobs, jobs[1])
         if jobs[1] and jobs ~= "[]" then
             jobs = json.decode(jobs[1].jobdata)
+        else
+            local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
+            local temp = {}
+            temp[Player.PlayerData.job.name] = Player.PlayerData.job.grade.level
+            MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
+                citizenid = citizenid,
+                jobdata = json.encode(temp),
+            })
+            jobs = temp
         end
         p:resolve(jobs)
     end)
     return Citizen.Await(p)
 end
     
-local jobdata = {}
-
-RegisterNetEvent("QBCore:Server:OnPlayerLoaded", function()
-    local Player = QBCore.Functions.GetPlayer(source)
-    jobdata[Player.PlayerData.citizenid] = GetJobs(Player.PlayerData.citizenid)
-end)
-
 local function AddJob(citizenid, job, grade)
-    if jobdata[citizenid] == nil then
-        jobdata[citizenid] = {}
-    end
-    jobdata[citizenid][job] = grade
+    local jobs = GetJobs(citizenid)
+    jobs[job] = grade
     MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
         citizenid = citizenid,
-        jobdata = json.encode(jobdata[citizenid]),
+        jobdata = json.encode(jobs),
     })
 end
 
