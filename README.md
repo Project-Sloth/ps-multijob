@@ -22,3 +22,4 @@ A script designed with a sleek and modern design for being able to display your 
 * [xFutte](https://github.com/xFutte)
 * [Silent](https://github.com/S1lentcodes)
 * [Jay](https://github.com/jay-fivem)
+* [Snipe](https://github.com/pushkart2)
