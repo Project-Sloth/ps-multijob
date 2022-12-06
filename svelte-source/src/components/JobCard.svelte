@@ -86,7 +86,7 @@
 	<div class={"text-[var(--color-darkblue)] absolute right-[10px] top-[10px] cursor-pointer"} 
 		on:click={() => deleteJob(nuiName, nuiName, nuiRank)}
 	>
-		<svelte:component this={DeleteSVG} />
+		<!-- <svelte:component this={DeleteSVG} /> -->
 	</div>
 	<div class="job-about">
 		<div class="w-6 text-[var(--color-green)]">
