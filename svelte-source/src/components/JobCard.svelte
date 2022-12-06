@@ -27,7 +27,7 @@
 		return select ? "Selected" : "Unselect";
 	}
 
-	const { activeJob, onDuty, setActiveJob, toggleDuty, unSetActiveJob } = JobStore;
+	const { activeJob, onDuty, setActiveJob, toggleDuty, unSetActiveJob, deleteJob } = JobStore;
 
 	let isActive: boolean = false;
 	$: isActive = $activeJob == nuiName;
@@ -83,7 +83,9 @@
 
 <main class="job w-full flex flex-col mt-[30px] b-rd-[10px] px-[22px] py-[33px]
 	relative select-none bg-[var(--color-darkerblue)] border border-[var(--color-darkblue)]">
-	<div class="text-[var(--color-darkblue)] absolute right-[10px] top-[10px] cursor-pointer">
+	<div class={"text-[var(--color-darkblue)] absolute right-[10px] top-[10px] cursor-pointer"} 
+		on:click={() => deleteJob(nuiName, nuiName, nuiRank)}
+	>
 		<svelte:component this={DeleteSVG} />
 	</div>
 	<div class="job-about">
