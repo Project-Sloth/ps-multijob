@@ -118,7 +118,7 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             grade_label = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
             salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
             active = online,
-            duty = Player.PlayerData.job.onduty, -- hopefully sends duty to ui
+            -- duty = Player.PlayerData.job.onduty, -- hopefully sends duty to ui
         }
         if Config.WhitelistJobs[job] then
             whitelistedjobs[#whitelistedjobs+1] = getjobs

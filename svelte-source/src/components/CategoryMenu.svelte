@@ -2,22 +2,27 @@
 	import JobCard from './JobCard.svelte';
 	import PanelStore from '../stores/PanelStore';
 	import JobStore from '../stores/JobStore';
+	import type { Job } from '../stores/JobStore';
 
 	const { panelActive } = PanelStore;
 	const { jobManifest } = JobStore;
+
+	let jobArray: Array<Job>;	
+	$: jobArray = $jobManifest[$panelActive] || [];
+
 </script>
 
 <main class="w-[380px] min-h-screen block px-[28px] pt-[40px] select-none">
 	<div class="text-white">
-		<span class="category">CATEGORY</span> <br />
-		<span class="category-name text-white block mt-[-5px] font-medium capitalize">
+		<p class="category">CATEGORY</p>
+		<p class="category-name text-white block mt-[-5px] font-medium capitalize">
 			{$panelActive} Jobs
-		</span>
+		</p>
 	</div>
 
-	{#each $jobManifest[$panelActive] as job}
+	{#each jobArray as job}
 		<JobCard name={job.label} nuiName={job.name} nuiRank={job.grade} icon={job.icon} description={job.description}
-			salary={job.salary} rank={job.grade_label} active={job.active} />
+			salary={job.salary} rank={job.grade_label} active={job.active}/>
 	{/each}
 </main>
 

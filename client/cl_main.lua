@@ -14,14 +14,15 @@ local function OpenUI()
     SendNUIMessage({
         action = 'sendjobs', -- action
         activeJob = job["name"], -- string
+        onDuty = job["onduty"]
         jobs = GetJobs(), -- table
     })
 end
 
-
 RegisterNUICallback('selectjob', function(data, cb)
-    cb({})
     TriggerServerEvent("ps-multijob:changeJob", data["name"], data["grade"])
+    -- TODO: Need to send back if we are on duty for this new job we are selecting
+    cb({onDuty = true})
 end)
 
 RegisterNUICallback('closemenu', function(data, cb)
@@ -40,13 +41,10 @@ RegisterNUICallback('toggleduty', function(data, cb)
     TriggerServerEvent("QBCore:ToggleDuty")
 end)
 
-
-
 -- Command Code
 RegisterCommand("jobmenu", OpenUI)
 RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "l")
 TriggerEvent('chat:removeSuggestion', '/jobmenu')
-
 
 -- local function OpenUI()
     -- local job = QBCore.Functions.GetPlayerData().job

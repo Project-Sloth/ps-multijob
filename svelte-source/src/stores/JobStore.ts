@@ -1,7 +1,7 @@
 import { writable, Writable } from "svelte/store";
 import fetchNUI from '../utils/fetch';
 
-interface Job {
+export interface Job {
   name: string;
   label: string;
   description: string;
@@ -20,6 +20,7 @@ type JobManifest = {
 interface nuiOpenMessage {
   action: string;
   activeJob: string;
+  onDuty: boolean;
   jobs: JobManifest;
 }
 
@@ -27,7 +28,7 @@ const mockJobManifest: JobManifest = {
   "whitelist": [
     {
       name: "police person",
-      label: "blah",
+      label: "police person",
       description: `Generate Lorem lpsum placeholder text.
       Select the number of characters, words, sentences or paragraphs, and hit generate!`,
       salary: 250,
@@ -38,7 +39,7 @@ const mockJobManifest: JobManifest = {
     },
     {
       name: "police chief",
-      label: "blah",
+      label: "police chief",
       description: "Blah blah blah",
       salary: 500,
       grade_label: "Boss",
@@ -50,7 +51,7 @@ const mockJobManifest: JobManifest = {
   "civilian": [
     {
       name: "taxi driver",
-      label: "blah",
+      label: "taxi driver",
       description: `Generate Lorem lpsum placeholder text.
         Select the number of characters, words, sentences or paragraphs, and hit generate!`,
       salary: 150,
@@ -61,7 +62,7 @@ const mockJobManifest: JobManifest = {
     },
     {
       name: "murdershot cashier",
-      label: "blah",
+      label: "murdershot cashier",
       description: "Take people's order and serve them food",
       salary: 100,
       grade_label: "Cashier",
@@ -75,12 +76,14 @@ const mockJobManifest: JobManifest = {
 interface JobState {
   jobManifest: Writable<JobManifest>;
   activeJob: Writable<string>;
+  onDuty: Writable<boolean>;
 }
 
 const store = () => {
   const JobStore: JobState = {
     jobManifest: writable(mockJobManifest),
-    activeJob: writable(""),
+    activeJob: writable("police person"),
+    onDuty: writable(false),
   }
 
   const methods = {
@@ -94,16 +97,24 @@ const store = () => {
     receiveOpenMessage(data: nuiOpenMessage) {
       JobStore.jobManifest.set(data.jobs);
       JobStore.activeJob.set(data.activeJob);
+      JobStore.onDuty.set(data.onDuty);
     },
-    setActiveJob(jobName: string, nuiName: string, nuiRank: string) {
+    async setActiveJob(jobName: string, nuiName: string, nuiRank: number) {
       JobStore.activeJob.set(jobName);
-      fetchNUI("selectjob", {
+      // Needs to give back onDuty
+      let data = await fetchNUI("selectjob", {
         name: nuiName,
         grade: nuiRank,
       });
+      JobStore.onDuty.set(data?.onDuty);
     },
-    setOffDuty() {
+    unSetActiveJob() {
       JobStore.activeJob.set("");
+      JobStore.onDuty.set(false);
+    },
+    toggleDuty() {
+      JobStore.onDuty.update(state => !state);
+      fetchNUI('toggleduty', null);
     }
   }
 

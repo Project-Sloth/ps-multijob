@@ -5,7 +5,7 @@
 	const { panelActive, panels } = PanelStore;
 </script>
 
-<nav class="w-[80px] min-h-screen nav float-right flex flex-col">
+<nav class="w-[80px] min-h-screen nav float-right flex flex-col z-10">
 	<div class="ps-logo w-full h-[80px]"/>
 	{#each $panels as item}
 		<NavItem name={item.name} isActive={item.name == $panelActive} icon={item.icon}/>

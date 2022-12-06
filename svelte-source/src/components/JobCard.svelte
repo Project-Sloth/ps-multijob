@@ -4,6 +4,7 @@
 	import RankSVG from './atoms/svgs/RankSVG.svelte';
 	import ActiveSVG from './atoms/svgs/ActiveSVG.svelte';
 	import SelectSVG from './atoms/svgs/SelectSVG.svelte';
+	import CrossMarkSVG from './atoms/svgs/CrossMarkSVG.svelte';
 	import DeleteSVG from './atoms/svgs/DeleteSVG.svelte';
 	import ClockSVG from './atoms/svgs/ClockSVG.svelte';
 	import TaxiSVG from './atoms/svgs/TaxiSVG.svelte';
@@ -15,17 +16,73 @@
 	export let description: string;
 	export let salary: number;
 	export let rank: string;
-	export let nuiRank: string;
+	export let nuiRank: number;
 	export let active: number;
 
-	const { activeJob, setActiveJob, setOffDuty } = JobStore;
+	function getDutyText(onDuty: boolean) {
+		return onDuty ? "On Duty" : "Off Duty";
+	}
 
-	let onDuty: boolean = false;
-	$: onDuty = $activeJob == nuiName;
+	function getSelectText(select: boolean) {
+		return select ? "Selected" : "Unselect";
+	}
+
+	const { activeJob, onDuty, setActiveJob, toggleDuty, unSetActiveJob } = JobStore;
+
+	let isActive: boolean = false;
+	$: isActive = $activeJob == nuiName;
+	$: dutyText = getDutyText($onDuty);
+
+	let onDutyHover: boolean = false;
+	let transitionOnDuty: boolean = false;
+	let transitionOffDuty: boolean = false;
+
+	function handleOnDutyMouseEnter() {
+		dutyText = getDutyText(!$onDuty);
+		onDutyHover = true;
+	}
+
+	function handleOnDutyMouseLeave() {
+		dutyText = getDutyText($onDuty);
+		onDutyHover = false;
+		transitionOnDuty = false;
+		transitionOffDuty = false;
+	}
+
+	function handleDutyChange() {
+		if ($onDuty) {
+			transitionOffDuty = true;
+			transitionOnDuty = false;
+		} else {
+			transitionOnDuty = true;
+			transitionOffDuty = false;
+		}
+		toggleDuty();
+	}
+
+	let selectText: string = "selected";
+	let selectHover: boolean = false;
+
+	function handleOnSelectMouseEnter() {
+		selectText = getSelectText(false);
+		selectHover = true;
+	}
+
+	function handleOnSelectMouseLeave() {
+		selectText = getSelectText(true);
+		selectHover = false;
+	}
+
+	function handleUnSelectJob() {
+		unSetActiveJob();
+		selectHover = false;
+		selectText = "selected";
+	}
 
 </script>
 
-<main class="job w-full flex flex-col mt-[30px] b-rd-[10px] px-[22px] py-[33px] relative select-none">
+<main class="job w-full flex flex-col mt-[30px] b-rd-[10px] px-[22px] py-[33px]
+	relative select-none bg-[var(--color-darkerblue)] border border-[var(--color-darkblue)]">
 	<div class="text-[var(--color-darkblue)] absolute right-[10px] top-[10px] cursor-pointer">
 		<svelte:component this={DeleteSVG} />
 	</div>
@@ -47,7 +104,7 @@
 	</div>
 	<div class="mt-8">
 		<div class="job-select">
-			{#if !onDuty}
+			{#if !isActive}
 				<button class="bg-[var(--color-green)] flex flex-row h-11 items-center justify-center gap-1 b-rd-[5px] py-[10px] font-medium text-black flex-1 w-full"
 					on:click={() => setActiveJob(nuiName, nuiName, nuiRank)}
 				>
@@ -57,24 +114,41 @@
 					<p class="ml-[5px] uppercase tracking-wide">select</p>
 				</button>
 			{/if}
-			{#if onDuty}
+			{#if isActive}
 				<div class="flex flex-row justify-between gap-2">
-						<div class="flex flex-1 flex-row gap-2 border-1 b-rd-[5px] justify-center items-center h-11">
-							<div class="w-5">
-								<svelte:component this={SelectSVG} />
-							</div>
-							<p class="uppercase tracking-wide">selected</p>
-						</div>
+						<button class={"flex flex-1 flex-row gap-2 border-1 b-rd-[5px] justify-center items-center h-11"+
+							(selectHover ? "border-[var(--color-orange)] text-[var(--color-orange)]":"")}
+							on:click={handleUnSelectJob} on:mouseenter={handleOnSelectMouseEnter} on:mouseleave={handleOnSelectMouseLeave}>
+							{#if !selectHover}
+								<div class="w-5">
+									<svelte:component this={SelectSVG}/>
+								</div>
+							{/if}
+							<p class="uppercase tracking-wide">
+								{selectText}
+							</p>
+						</button>
 					<div class="flex-1">
-						<button class="flex flex-row justify-center items-center gap-1 h-11 text-[var(--color-orange)] border-1
-							border-[var(--color-orange)] b-rd-[5px] py-[10px]
-							font-medium flex-1 w-full hover:bg-[var(--color-orange)] hover:text-black"
-							on:click={() => setOffDuty()}
+						<button class={`flex flex-row justify-center items-center gap-1 h-11 border-1 b-rd-[5px] py-[10px] font-medium flex-1 w-full ` +
+							($onDuty ?
+								"border-[var(--color-green)]  text-[var(--color-green)] "
+							: "border-[var(--color-orange)] text-[var(--color-orange)] ")+
+							($onDuty && !transitionOnDuty ? "hover:border-[var(--color-orange)] hover:text-[var(--color-orange)]":"")+
+							(!$onDuty && !transitionOffDuty ? "hover:border-[var(--color-green)]  hover:text-[var(--color-green)]":"")
+							}
+							on:click={handleDutyChange} on:mouseenter={handleOnDutyMouseEnter} on:mouseleave={handleOnDutyMouseLeave}
 						>
-							<div class="w-5">
-								<svelte:component this={ClockSVG} />
-							</div>
-							<p class="ml-[5px] uppercase tracking-wide">off duty</p>
+							{#if ($onDuty && !onDutyHover) || transitionOnDuty}
+								<div class="w-5">
+									<svelte:component this={ClockSVG} />
+								</div>
+							{/if}
+							{#if (!$onDuty && !onDutyHover) || transitionOffDuty}
+								<div class="w-[0.9rem]">
+									<svelte:component this={CrossMarkSVG} />	
+								</div>
+							{/if}
+							<p class="ml-[5px] uppercase tracking-wide">{dutyText}</p>
 						</button>
 					</div>
 				</div>
@@ -82,14 +156,3 @@
 		</div>
 	</div>
 </main>
-
-<style lang="scss">
-	.job {
-		background: var(--color-darkerblue);
-		border: 1px solid var(--color-darkblue);
-
-		&-icon {
-			color: var(--color-green);
-		}
-	}
-</style>
