@@ -1,11 +1,5 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-RegisterCommand("jobmenu", OpenUI)
-
-RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "J")
-
-TriggerEvent('chat:removeSuggestion', '/jobmenu')
-
 local function GetJobs()
     local p = promise.new()
     QBCore.Functions.TriggerCallback('ps-multijob:getJobs', function(result)
@@ -56,3 +50,9 @@ RegisterNUICallback('toggleduty', function(data, cb)
     
     TriggerServerEvent("QBCore:ToggleDuty")
 end)
+
+RegisterCommand("jobmenu", OpenUI)
+
+RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "J")
+
+TriggerEvent('chat:removeSuggestion', '/jobmenu')
