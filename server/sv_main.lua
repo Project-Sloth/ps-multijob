@@ -10,8 +10,8 @@ local function GetJobs(citizenid)
         else
             local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
             local temp = {}
-            temp[Player.PlayerData.job.name] = Player.PlayerData.job.grade.level
             if not Config.IgnoredJobs[Player.PlayerData.job.name] then
+                temp[Player.PlayerData.job.name] = Player.PlayerData.job.grade.level
                 MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
                     citizenid = citizenid,
                     jobdata = json.encode(temp),
@@ -40,11 +40,18 @@ local function AddJob(citizenid, job, grade)
     })
 end
 
-local function RemoveJob(citizenid, rjob, rgrade)
+local function RemoveJob(citizenid, rjob, rgrade) -- TO DO : Rewrite this function
     local jobs = GetJobs(citizenid)
     for job, grade in pairs(jobs) do
         if job == rjob and grade == rgrade then
             jobs[job] = nil
+            break
+        end
+    end
+    local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
+    if Player.PlayerData.job.name == rjob then
+        for k,v in pairs(jobs) do
+            Player.Functions.SetJob(k,v)
             break
         end
     end

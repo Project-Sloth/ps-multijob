@@ -39,8 +39,10 @@ RegisterNUICallback('closemenu', function(data, cb)
 end)
 
 RegisterNUICallback('removejob', function(data, cb)
-    cb({})
     TriggerServerEvent("ps-multijob:removeJob", data["name"], data["grade"])
+    local jobs = GetJobs()
+    jobs[data["name"]] = nil
+    cb(jobs)
 end)
 
 RegisterNUICallback('toggleduty', function(data, cb)

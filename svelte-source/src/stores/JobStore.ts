@@ -87,7 +87,7 @@ const store = () => {
   }
 
   const methods = {
-    deleteJob(jobName: string, nuiName: string, nuiRank: string) {
+    deleteJob(jobName: string, nuiName: string, nuiRank: number) {
       // TODO: need to remove job from our current arrays
       fetchNUI("removejob", {
         name: nuiName,
