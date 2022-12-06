@@ -10,6 +10,7 @@ A script designed with a sleek and modern design for being able to display your 
 * Configurable white list jobs.
 * Configurable descriptions per job.
 * Remove someone's job by doing /removejob - Admin only. 
+* Coming later: Admin Tab for job handling. 
 
 # Installation
 * Rename to ps-multijob. Do not change the name or it will not work. 
