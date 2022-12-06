@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-local function GetJobs(citizenid)
+local function GetJobs(citizenid) -- errors for unemployed job, god tier error | fixed in adding job to database so i dont even worry about this one anymore lol
     local p = promise.new()
     MySQL.Async.fetchAll("SELECT jobdata FROM multijobs WHERE citizenid = @citizenid",{
         ["@citizenid"] = citizenid
@@ -11,10 +11,12 @@ local function GetJobs(citizenid)
             local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
             local temp = {}
             temp[Player.PlayerData.job.name] = Player.PlayerData.job.grade.level
-            MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
-                citizenid = citizenid,
-                jobdata = json.encode(temp),
-            })
+            if not Config.IgnoredJobs[Player.PlayerData.job.name] then
+                MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
+                    citizenid = citizenid,
+                    jobdata = json.encode(temp),
+                })
+            end
             jobs = temp
         end
         p:resolve(jobs)
@@ -24,6 +26,13 @@ end
     
 local function AddJob(citizenid, job, grade)
     local jobs = GetJobs(citizenid)
+    -- idk why but it somehow saves unemployed when its never given the value, below is jays shit attempt of a fix
+    for ignored in pairs(Config.IgnoredJobs) do
+        if jobs[ignored] then
+            jobs[ignored] = nil
+        end
+    end
+
     jobs[job] = grade
     MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
         citizenid = citizenid,

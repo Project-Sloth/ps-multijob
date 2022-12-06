@@ -1,13 +1,5 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-
--- Command Code
-RegisterCommand("jobmenu", OpenUI)
-
-RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "J")
-
-TriggerEvent('chat:removeSuggestion', '/jobmenu')
-
 local function GetJobs()
     local p = promise.new()
     QBCore.Functions.TriggerCallback('ps-multijob:getJobs', function(result)
@@ -51,13 +43,15 @@ RegisterNUICallback('toggleduty', function(data, cb)
 
     local job = QBCore.Functions.GetPlayerData().job.name
 
-    local policeJobs = {
-        ["police"] = true
-    }
-    if policeJobs[job] then
-        TriggerEvent('qb-policejob:ToggleDuty')
+    if Config.DenyDuty[job] then
+        TriggerEvent("QBCore:Notify", 'Not allowed to use this station for clock-in.', 'error')
         return
     end
     
     TriggerServerEvent("QBCore:ToggleDuty")
 end)
+
+-- Command Code
+RegisterCommand("jobmenu", OpenUI)
+RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "l")
+TriggerEvent('chat:removeSuggestion', '/jobmenu')

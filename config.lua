@@ -4,6 +4,11 @@ Config.IgnoredJobs = {
 	["unemployed"] = true,
 }
 
+Config.DenyDuty = {
+	["ambulance"] = true,
+	["police"] = true,
+}
+
 Config.WhitelistJobs = {
 	["police"] = true,
 	["ambulance"] = true,
