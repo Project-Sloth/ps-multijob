@@ -33,4 +33,5 @@ Config.Descriptions = {
 	["garbage"] = "Drive a garbage truck",
 	["vineyard"] = "Get them vines",
 	["hotdog"] = "Sell them glizzys",
+	["unemployed"] = "You should probably get a job",
 }

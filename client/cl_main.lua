@@ -1,5 +1,11 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
+RegisterCommand("jobmenu", OpenUI)
+
+RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "J")
+
+TriggerEvent('chat:removeSuggestion', '/jobmenu')
+
 local function GetJobs()
     local p = promise.new()
     QBCore.Functions.TriggerCallback('ps-multijob:getJobs', function(result)
@@ -21,7 +27,6 @@ end
 
 RegisterNUICallback('selectjob', function(data, cb)
     TriggerServerEvent("ps-multijob:changeJob", data["name"], data["grade"])
-    -- TODO: Need to send back if we are on duty for this new job we are selecting
     local onDuty = false
     if data["name"] ~= "police" then onDuty = QBCore.Shared.Jobs[data["name"]].defaultDuty end
     cb({onDuty = onDuty})
@@ -41,7 +46,6 @@ end)
 
 RegisterNUICallback('toggleduty', function(data, cb)
     cb({})
-    -- to do, add toggle sync
 
     local job = QBCore.Functions.GetPlayerData().job.name
 
@@ -52,8 +56,3 @@ RegisterNUICallback('toggleduty', function(data, cb)
     
     TriggerServerEvent("QBCore:ToggleDuty")
 end)
-
--- Command Code
-RegisterCommand("jobmenu", OpenUI)
-RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "l")
-TriggerEvent('chat:removeSuggestion', '/jobmenu')
