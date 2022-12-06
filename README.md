@@ -9,6 +9,7 @@ A script designed with a sleek and modern design for being able to display your 
 * Configurable max jobs per citizen ID.
 * Configurable white list jobs.
 * Configurable descriptions per job.
+* Remove someone's job by doing /removejob - Admin only. 
 
 # Installation
 * Rename to ps-multijob. Do not change the name or it will not work. 
