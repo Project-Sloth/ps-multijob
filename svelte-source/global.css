@@ -24,3 +24,11 @@ body {
 	--color-grey: #797979;
 	--font-color: rgba(var(--theme-white), 0.87);
 }
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: rgba(60, 60, 60, 1);
+}

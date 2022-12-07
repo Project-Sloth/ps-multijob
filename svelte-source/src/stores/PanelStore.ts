@@ -27,7 +27,7 @@ const panels: Array<panel> = [
 
 const store = () => {
   const PanelStore: PanelState = {
-    show: writable(false),
+    show: writable(true),
     panelActive: writable(""),
     panels: writable(panels),
   }
