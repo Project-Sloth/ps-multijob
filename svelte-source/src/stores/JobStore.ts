@@ -143,7 +143,7 @@ const store = () => {
       });
       // Remove job from list
       JobStore.jobManifest.update((state) => {
-        state[category] = state[category].filter(element.name != nuiName);
+        state[category] = state[category].filter((element) => element.name != nuiName);
         return state;
       });
     },
