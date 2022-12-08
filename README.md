@@ -5,18 +5,21 @@ A script designed with a sleek and modern design for being able to display your 
 
 # Features
 * Configurable ignore certain jobs. 
-* Configurable keybind to open the job menu.
+* Configurable keybind to open the job menu - J by default. 
 * Configurable max jobs per citizen ID.
 * Configurable white list jobs.
 * Configurable descriptions per job.
+* Remove someone's job by doing /removejob - Admin only. 
+* Coming later: Admin Tab for job handling. 
 
 # Installation
 * Rename to ps-multijob. Do not change the name or it will not work. 
 * Import [SQL](https://github.com/Project-Sloth/ps-multijob/blob/main/database.sql) into your database
-* Add to server.cfg to load. 
+* Ensure to server.cfg 
 
 
 # Credits:
 * [xFutte](https://github.com/xFutte)
 * [Silent](https://github.com/S1lentcodes)
 * [Jay](https://github.com/jay-fivem)
+* [Snipe](https://github.com/pushkart2)

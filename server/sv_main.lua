@@ -1,6 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-local function GetJobs(citizenid) -- errors for unemployed job, god tier error | fixed in adding job to database so i dont even worry about this one anymore lol
+local function GetJobs(citizenid)
     local p = promise.new()
     MySQL.Async.fetchAll("SELECT jobdata FROM multijobs WHERE citizenid = @citizenid",{
         ["@citizenid"] = citizenid
@@ -26,7 +26,6 @@ end
     
 local function AddJob(citizenid, job, grade)
     local jobs = GetJobs(citizenid)
-    -- idk why but it somehow saves unemployed when its never given the value, below is jays shit attempt of a fix
     for ignored in pairs(Config.IgnoredJobs) do
         if jobs[ignored] then
             jobs[ignored] = nil
@@ -40,16 +39,11 @@ local function AddJob(citizenid, job, grade)
     })
 end
 
-local function RemoveJob(citizenid, rjob, rgrade) -- TO DO : Rewrite this function
+local function RemoveJob(citizenid, job, grade)
     local jobs = GetJobs(citizenid)
-    for job, grade in pairs(jobs) do
-        if job == rjob and grade == rgrade then
-            jobs[job] = nil
-            break
-        end
-    end
+    jobs[job] = nil
     local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
-    if Player.PlayerData.job.name == rjob then
+    if Player.PlayerData.job.name == job then
         for k,v in pairs(jobs) do
             Player.Functions.SetJob(k,v)
             break
@@ -134,7 +128,6 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             grade_label = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
             salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
             active = online,
-            -- duty = Player.PlayerData.job.onduty, -- hopefully sends duty to ui
         }
         if Config.WhitelistJobs[job] then
             whitelistedjobs[#whitelistedjobs+1] = getjobs
