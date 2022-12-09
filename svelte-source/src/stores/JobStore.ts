@@ -1,11 +1,13 @@
 import { writable, Writable, get } from "svelte/store";
 import fetchNUI from '../utils/fetch';
-import type { Job, JobManifest } from '../types/types';
+import type { Job, JobManifest, side } from '../types/types';
+import PanelStore from "./PanelStore";
 
 export interface nuiOpenMessage {
   activeJob: string;
   onDuty: boolean;
   jobs: JobManifest;
+  side: side;
 }
 
 interface JobState {
@@ -45,11 +47,10 @@ const store = () => {
       });
     },
     receiveOpenMessage(data: nuiOpenMessage) {
-      console.log("wtf", data);
-      console.log("Jobs", data.jobs);
       JobStore.jobManifest.set(data.jobs);
       JobStore.activeJob.set(data.activeJob);
       JobStore.onDuty.set(data.onDuty);
+      PanelStore.side.set(data.side || "right");
     },
     recieveUpdateJob(data: nuiUpdateJobMessage) {
       const activeJob: string = get(JobStore.activeJob);
@@ -69,14 +70,14 @@ const store = () => {
           return job.name == data.name
         }
         
-        let index = state.civilian.findIndex(findSameName);
+        let index = state.civilian?.findIndex(findSameName);
 
         if (index != -1) {
           updateJob("civilian", index);
           return state;
         }
 
-        index = state.whitelist.findIndex(findSameName);
+        index = state.whitelist?.findIndex(findSameName);
 
         if (index != -1) {
           updateJob("whitelist", index);

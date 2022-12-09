@@ -15,63 +15,63 @@ export function exampleCall() {
         header: "Some Header!",
       },
     });
-  }, 1000);  
+  }, 100);  
 };
 
 export function mockJobMenuOpen() {
   const mockJobManifest: JobManifest = {
     "whitelist": [
-      // {
-      //   name: "police person",
-      //   label: "police person",
-      //   description: `Generate Lorem lpsum placeholder text.
-      //   Select the number of characters, words, sentences or paragraphs, and hit generate!`,
-      //   salary: 250,
-      //   grade_label: "Regular",
-      //   grade: 0,
-      //   active: 0,
-      //   icon: "",
-      // },
-      // {
-      //   name: "police chief",
-      //   label: "police chief",
-      //   description: "Blah blah blah",
-      //   salary: 500,
-      //   grade_label: "Boss",
-      //   grade: 0,
-      //   active: 1,
-      //   icon: "",
-      // },
-      // {
-      //   name: "police chief2",
-      //   label: "police chief2",
-      //   description: "Blah blah blah",
-      //   salary: 500,
-      //   grade_label: "Boss",
-      //   grade: 0,
-      //   active: 1,
-      //   icon: "",
-      // },
-      // {
-      //   name: "police chief3",
-      //   label: "police chief3",
-      //   description: "Blah blah blah",
-      //   salary: 500,
-      //   grade_label: "Boss",
-      //   grade: 0,
-      //   active: 1,
-      //   icon: "",
-      // },
-      // {
-      //   name: "police chief4",
-      //   label: "police chief4",
-      //   description: "Blah blah blah",
-      //   salary: 500,
-      //   grade_label: "Boss",
-      //   grade: 0,
-      //   active: 1,
-      //   icon: "",
-      // },
+      {
+        name: "police person",
+        label: "police person",
+        description: `Generate Lorem lpsum placeholder text.
+        Select the number of characters, words, sentences or paragraphs, and hit generate!`,
+        salary: 250,
+        grade_label: "Regular",
+        grade: 0,
+        active: 0,
+        icon: "",
+      },
+      {
+        name: "police chief",
+        label: "police chief",
+        description: "Blah blah blah",
+        salary: 500,
+        grade_label: "Boss",
+        grade: 0,
+        active: 1,
+        icon: "",
+      },
+      {
+        name: "police chief2",
+        label: "police chief2",
+        description: "Blah blah blah",
+        salary: 500,
+        grade_label: "Boss",
+        grade: 0,
+        active: 1,
+        icon: "",
+      },
+      {
+        name: "police chief3",
+        label: "police chief3",
+        description: "Blah blah blah",
+        salary: 500,
+        grade_label: "Boss",
+        grade: 0,
+        active: 1,
+        icon: "",
+      },
+      {
+        name: "police chief4",
+        label: "police chief4",
+        description: "Blah blah blah",
+        salary: 500,
+        grade_label: "Boss",
+        grade: 0,
+        active: 1,
+        icon: "",
+      },
     ],
     "civilian": [
       {
@@ -122,6 +122,7 @@ export function mockJobMenuOpen() {
       activeJob: "murdershot1",
       jobs: mockJobManifest,
       onDuty: true,
+      side: "left",
     }
     mockEventCall({
       action: 'sendjobs',

@@ -1,4 +1,5 @@
 import { writable, Writable } from "svelte/store";
+import type { side } from '../types/types';
 import fetchNUI from '../utils/fetch';
 import CivilianSVG from '../components/atoms/svgs/CivilianSVG.svelte';
 import WhiteListSVG from '../components/atoms/svgs/WhitelistSVG.svelte';
@@ -12,6 +13,7 @@ interface PanelState {
   show: Writable<boolean>;
   panelActive: Writable<string>;
   panels: Writable<Array<panel>>;
+  side: Writable<side>;
 }
 
 const panels: Array<panel> = [
@@ -27,9 +29,10 @@ const panels: Array<panel> = [
 
 const store = () => {
   const PanelStore: PanelState = {
-    show: writable(false),
     panelActive: writable(""),
     panels: writable(panels),
+    show: writable(false),
+    side: writable("right"),
   }
 
   const methods = {
@@ -44,6 +47,9 @@ const store = () => {
     },
     setShow(show: boolean) {
       PanelStore.show.set(show);
+    },
+    setSide(side: side) {
+      PanelStore.side.set(side);
     }
   }
 

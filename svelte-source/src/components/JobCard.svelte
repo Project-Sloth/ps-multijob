@@ -12,7 +12,7 @@
 
 	export let name: string;
 	export let nuiName: string;
-	export let icon: any;
+	// export let icon: any; TODO
 	export let description: string = "";
 	export let salary: number;
 	export let rank: string;

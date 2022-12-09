@@ -16,6 +16,7 @@ local function OpenUI()
         activeJob = job["name"],
         onDuty = job["onduty"],
         jobs = GetJobs(),
+        side = Config.Side,
     })
 end
 

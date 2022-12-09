@@ -9,7 +9,9 @@ export interface Job {
   icon: any;
 }
 
-export type JobManifest = {
+export interface JobManifest {
   "whitelist": Array<Job>;
   "civilian": Array<Job>;
 }
+
+export type side = "left" | "right";
