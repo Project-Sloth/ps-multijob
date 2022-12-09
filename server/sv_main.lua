@@ -153,7 +153,6 @@ RegisterNetEvent("ps-multijob:changeJob",function(cjob, cgrade)
 
     local jobs = GetJobs(Player.PlayerData.citizenid)
     for job, grade in pairs(jobs) do
-        print("Job", job)
         if cjob == job and cgrade == grade then
             Player.Functions.SetJob(job, grade)
         end
