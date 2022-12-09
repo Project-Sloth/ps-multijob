@@ -5,7 +5,6 @@ import PanelStore from '../stores/PanelStore';
 interface nuiMessage {
   data: {
     action: string,
-    topic?: string,
     [key: string]: any,
   },
 }
@@ -16,6 +15,9 @@ export function EventHandler() {
       case "sendjobs":
         JobStore.receiveOpenMessage(event.data as any);
         PanelStore.setShow(true);
+        break;
+      case "updatejob":
+        JobStore.recieveUpdateJob(event.data as any);
         break;
     }
   }

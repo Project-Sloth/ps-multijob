@@ -51,6 +51,18 @@ RegisterNUICallback('toggleduty', function(data, cb)
     TriggerServerEvent("QBCore:ToggleDuty")
 end)
 
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
+    SendNUIMessage({
+        action = 'updatejob',
+        name = JobInfo["name"],
+        label = JobInfo["label"],
+        onDuty = JobInfo["onduty"],
+        gradeLabel = JobInfo["grade"].name,
+        grade = JobInfo["grade"].level,
+        payment = JobInfo["payment"],
+    })
+end)
+
 RegisterCommand("jobmenu", OpenUI)
 
 RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "J")

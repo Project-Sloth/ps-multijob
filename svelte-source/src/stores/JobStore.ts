@@ -1,16 +1,7 @@
-import { writable, Writable } from "svelte/store";
+import { writable, Writable, get } from "svelte/store";
 import fetchNUI from '../utils/fetch';
-
-export interface Job {
-  name: string;
-  label: string;
-  description: string;
-  salary: number;
-  grade_label: string;
-  grade: number;
-  active: number;
-  icon: any;
-}
+import type { Job } from '../types/types';
+import { element } from "svelte/internal";
 
 type JobManifest = {
   "whitelist": Array<Job>;
@@ -47,6 +38,36 @@ const mockJobManifest: JobManifest = {
       active: 1,
       icon: "",
     },
+    {
+      name: "police chief2",
+      label: "police chief2",
+      description: "Blah blah blah",
+      salary: 500,
+      grade_label: "Boss",
+      grade: 0,
+      active: 1,
+      icon: "",
+    },
+    {
+      name: "police chief3",
+      label: "police chief3",
+      description: "Blah blah blah",
+      salary: 500,
+      grade_label: "Boss",
+      grade: 0,
+      active: 1,
+      icon: "",
+    },
+    {
+      name: "police chief4",
+      label: "police chief4",
+      description: "Blah blah blah",
+      salary: 500,
+      grade_label: "Boss",
+      grade: 0,
+      active: 1,
+      icon: "",
+    },
   ],
   "civilian": [
     {
@@ -61,8 +82,28 @@ const mockJobManifest: JobManifest = {
       icon: "",
     },
     {
-      name: "murdershot cashier",
-      label: "murdershot cashier",
+      name: "murdershot1",
+      label: "murdershot1",
+      description: "Take people's order and serve them food",
+      salary: 100,
+      grade_label: "Cashier",
+      grade: 0,
+      active: 0,
+      icon: "",
+    },
+    {
+      name: "murdershot2",
+      label: "murdershot2",
+      description: "Take people's order and serve them food",
+      salary: 100,
+      grade_label: "Cashier",
+      grade: 0,
+      active: 0,
+      icon: "",
+    },
+    {
+      name: "murdershot3",
+      label: "murdershot3",
       description: "Take people's order and serve them food",
       salary: 100,
       grade_label: "Cashier",
@@ -79,6 +120,14 @@ interface JobState {
   onDuty: Writable<boolean>;
 }
 
+interface nuiUpdateJobMessage {
+  name: string;
+  onDuty: boolean;
+  gradeLabel: string;
+  grade: number;
+  payment: number;
+}
+
 const store = () => {
   const JobStore: JobState = {
     jobManifest: writable(mockJobManifest),
@@ -87,17 +136,55 @@ const store = () => {
   }
 
   const methods = {
-    deleteJob(jobName: string, nuiName: string, nuiRank: number) {
-      // TODO: need to remove job from our current arrays
+    deleteJob(nuiName: string, nuiRank: number, category: string) {
       fetchNUI("removejob", {
         name: nuiName,
         grade: nuiRank,
+      });
+      // Remove job from list
+      JobStore.jobManifest.update((state) => {
+        state[category] = state[category].filter((element) => element.name != nuiName);
+        return state;
       });
     },
     receiveOpenMessage(data: nuiOpenMessage) {
       JobStore.jobManifest.set(data.jobs);
       JobStore.activeJob.set(data.activeJob);
       JobStore.onDuty.set(data.onDuty);
+    },
+    recieveUpdateJob(data: nuiUpdateJobMessage) {
+      const activeJob: string = get(JobStore.activeJob);
+      if (activeJob == data.name) {
+        JobStore.onDuty.set(data.onDuty);
+      }
+
+      JobStore.jobManifest.update((state) => {
+        function updateJob(kind: "whitelist" | "civilian", index: number) {
+          let changeJob = state[kind][index];
+          changeJob.grade = data.grade;
+          changeJob.grade_label = data.gradeLabel;
+          changeJob.salary = data.payment;
+        }
+
+        let findSameName = (job: Job) => {
+          return job.name == data.name
+        }
+        
+        let index = state.civilian.findIndex(findSameName);
+
+        if (index != -1) {
+          updateJob("civilian", index);
+          return state;
+        }
+
+        index = state.whitelist.findIndex(findSameName);
+
+        if (index != -1) {
+          updateJob("whitelist", index);
+        }
+
+        return state;
+      })
     },
     async setActiveJob(jobName: string, nuiName: string, nuiRank: number) {
       JobStore.activeJob.set(jobName);
@@ -111,6 +198,11 @@ const store = () => {
     unSetActiveJob() {
       JobStore.activeJob.set("");
       JobStore.onDuty.set(false);
+      // Unselect current job by setting player to unemployed
+      fetchNUI("selectjob", {
+        name: 'unemployed',
+        grade: 0,
+      });
     },
     toggleDuty() {
       JobStore.onDuty.update(state => !state);
