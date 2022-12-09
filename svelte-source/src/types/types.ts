@@ -8,3 +8,8 @@ export interface Job {
   active: number;
   icon: any;
 }
+
+export type JobManifest = {
+  "whitelist": Array<Job>;
+  "civilian": Array<Job>;
+}

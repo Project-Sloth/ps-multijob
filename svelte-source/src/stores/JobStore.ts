@@ -1,117 +1,11 @@
 import { writable, Writable, get } from "svelte/store";
 import fetchNUI from '../utils/fetch';
-import type { Job } from '../types/types';
-import { element } from "svelte/internal";
+import type { Job, JobManifest } from '../types/types';
 
-type JobManifest = {
-  "whitelist": Array<Job>;
-  "civilian": Array<Job>;
-}
-
-interface nuiOpenMessage {
-  action: string;
+export interface nuiOpenMessage {
   activeJob: string;
   onDuty: boolean;
   jobs: JobManifest;
-}
-
-const mockJobManifest: JobManifest = {
-  "whitelist": [
-    {
-      name: "police person",
-      label: "police person",
-      description: `Generate Lorem lpsum placeholder text.
-      Select the number of characters, words, sentences or paragraphs, and hit generate!`,
-      salary: 250,
-      grade_label: "Regular",
-      grade: 0,
-      active: 0,
-      icon: "",
-    },
-    {
-      name: "police chief",
-      label: "police chief",
-      description: "Blah blah blah",
-      salary: 500,
-      grade_label: "Boss",
-      grade: 0,
-      active: 1,
-      icon: "",
-    },
-    {
-      name: "police chief2",
-      label: "police chief2",
-      description: "Blah blah blah",
-      salary: 500,
-      grade_label: "Boss",
-      grade: 0,
-      active: 1,
-      icon: "",
-    },
-    {
-      name: "police chief3",
-      label: "police chief3",
-      description: "Blah blah blah",
-      salary: 500,
-      grade_label: "Boss",
-      grade: 0,
-      active: 1,
-      icon: "",
-    },
-    {
-      name: "police chief4",
-      label: "police chief4",
-      description: "Blah blah blah",
-      salary: 500,
-      grade_label: "Boss",
-      grade: 0,
-      active: 1,
-      icon: "",
-    },
-  ],
-  "civilian": [
-    {
-      name: "taxi driver",
-      label: "taxi driver",
-      description: `Generate Lorem lpsum placeholder text.
-        Select the number of characters, words, sentences or paragraphs, and hit generate!`,
-      salary: 150,
-      grade_label: "Regular",
-      grade: 0,
-      active: 0,
-      icon: "",
-    },
-    {
-      name: "murdershot1",
-      label: "murdershot1",
-      description: "Take people's order and serve them food",
-      salary: 100,
-      grade_label: "Cashier",
-      grade: 0,
-      active: 0,
-      icon: "",
-    },
-    {
-      name: "murdershot2",
-      label: "murdershot2",
-      description: "Take people's order and serve them food",
-      salary: 100,
-      grade_label: "Cashier",
-      grade: 0,
-      active: 0,
-      icon: "",
-    },
-    {
-      name: "murdershot3",
-      label: "murdershot3",
-      description: "Take people's order and serve them food",
-      salary: 100,
-      grade_label: "Cashier",
-      grade: 0,
-      active: 0,
-      icon: "",
-    }
-  ],
 }
 
 interface JobState {
@@ -130,7 +24,10 @@ interface nuiUpdateJobMessage {
 
 const store = () => {
   const JobStore: JobState = {
-    jobManifest: writable(mockJobManifest),
+    jobManifest: writable({
+      "civilian": [],
+      "whitelist": [],
+    }),
     activeJob: writable("police person"),
     onDuty: writable(false),
   }
@@ -148,6 +45,8 @@ const store = () => {
       });
     },
     receiveOpenMessage(data: nuiOpenMessage) {
+      console.log("wtf", data);
+      console.log("Jobs", data.jobs);
       JobStore.jobManifest.set(data.jobs);
       JobStore.activeJob.set(data.activeJob);
       JobStore.onDuty.set(data.onDuty);

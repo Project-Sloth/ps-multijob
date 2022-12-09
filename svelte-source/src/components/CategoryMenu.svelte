@@ -1,14 +1,9 @@
 <script lang="ts">
 	import JobCard from './JobCard.svelte';
-	import PanelStore from '../stores/PanelStore';
-	import JobStore from '../stores/JobStore';
 	import type { Job } from '../types/types';
 
-	const { panelActive } = PanelStore;
-	const { jobManifest } = JobStore;
-
-	let jobArray: Array<Job>;	
-	$: jobArray = $jobManifest[$panelActive] || [];
+	export let jobArray: Array<Job> = [];
+	export let panelName: string = "";
 
 </script>
 
@@ -16,14 +11,14 @@
 	<div class="text-white px-[28px] pb-4">
 		<p class="category">CATEGORY</p>
 		<p class="category-name text-white block mt-[-5px] font-medium capitalize">
-			{$panelActive} Jobs
+			{panelName} Jobs
 		</p>
 	</div>
 
 	<div class="max-h-screen overflow-y-auto px-[28px] pb-20">
-		{#each jobArray as job}
+		{#each jobArray as job (job.name)}
 			<JobCard name={job.label} nuiName={job.name} nuiRank={job.grade} icon={job.icon} description={job.description}
-				salary={job.salary} rank={job.grade_label} active={job.active} category={$panelActive}/>
+				salary={job.salary} rank={job.grade_label} active={job.active} category={panelName}/>
 		{/each}
 	</div>
 </main>
