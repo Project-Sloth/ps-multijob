@@ -30,7 +30,7 @@ export function mockJobMenuOpen() {
         grade_label: "Regular",
         grade: 0,
         active: 0,
-        icon: "",
+        icon: "fa-solid fa-trash-can",
       },
       {
         name: "police chief",

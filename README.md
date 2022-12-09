@@ -10,6 +10,7 @@ A script designed with a sleek and modern design for being able to display your 
 * Configurable white list jobs.
 * Configurable descriptions per job.
 * Configurable side (left or right) of the screen you want the ui to show on. Right side by default. (see Config)
+* Configurable job icon via font awesome icons. Change these icons in the config
 * Remove someone's job by doing /removejob - Admin only. 
 * Coming later: Admin Tab for job handling. 
 

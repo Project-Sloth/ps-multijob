@@ -12,7 +12,7 @@
 
 	export let name: string;
 	export let nuiName: string;
-	// export let icon: any; TODO
+	export let icon: string = "";
 	export let description: string = "";
 	export let salary: number;
 	export let rank: string;
@@ -83,9 +83,15 @@
 
 <main class="job w-full flex flex-col gap-4 mb-[30px] b-rd-[10px] px-[22px] py-5
 	relative select-none bg-[var(--color-darkerblue)] border border-[var(--color-darkblue)]">
-	<div class="flex flex-row items-center gap-5 text-center">
+	<div class="flex flex-row items-center gap-2 text-center">
 		<div class="w-6 text-[var(--color-green)]">
-			<svelte:component this={TaxiSVG}/>
+			{#if icon}
+				<i
+					class="{icon} fa-lg"
+				/>
+			{:else}
+				<svelte:component this={TaxiSVG} />
+			{/if}
 		</div>
 		<p class="text-xl tracking-wide capitalize">
 			{name}

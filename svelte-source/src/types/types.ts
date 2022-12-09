@@ -6,7 +6,7 @@ export interface Job {
   grade_label: string;
   grade: number;
   active: number;
-  icon: any;
+  icon: string;
 }
 
 export interface JobManifest {

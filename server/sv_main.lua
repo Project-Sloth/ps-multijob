@@ -124,6 +124,7 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             name = job,
             grade = grade,
             description = Config.Descriptions[job],
+            icon = Config.FontAwesomeIcons[job],
             label = QBCore.Shared.Jobs[job].label,
             grade_label = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
             salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
