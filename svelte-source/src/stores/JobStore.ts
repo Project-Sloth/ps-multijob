@@ -198,6 +198,11 @@ const store = () => {
     unSetActiveJob() {
       JobStore.activeJob.set("");
       JobStore.onDuty.set(false);
+      // Unselect current job by setting player to unemployed
+      fetchNUI("selectjob", {
+        name: 'unemployed',
+        grade: 0,
+      });
     },
     toggleDuty() {
       JobStore.onDuty.update(state => !state);
