@@ -122,7 +122,7 @@ export function mockJobMenuOpen() {
       activeJob: "murdershot1",
       jobs: mockJobManifest,
       onDuty: true,
-      side: "left",
+      side: "right",
     }
     mockEventCall({
       action: 'sendjobs',
