@@ -60,7 +60,10 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
         onDuty = JobInfo["onduty"],
         gradeLabel = JobInfo["grade"].name,
         grade = JobInfo["grade"].level,
-        payment = JobInfo["payment"],
+        salary = JobInfo["payment"],
+        isWhitelist = Config.WhitelistJobs[JobInfo["name"]] or false,
+        description = Config.Descriptions[JobInfo["name"]] or "",
+        icon = Config.FontAwesomeIcons[JobInfo["name"]] or "",
     })
 end)
 

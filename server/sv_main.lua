@@ -135,7 +135,7 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             description = Config.Descriptions[job],
             icon = Config.FontAwesomeIcons[job],
             label = QBCore.Shared.Jobs[job].label,
-            grade_label = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
+            gradeLabel = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
             salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
             active = online,
         }
@@ -144,11 +144,12 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
         else
             civjobs[#civjobs+1] = getjobs
         end
-        multijobs = {
-            whitelist = whitelistedjobs,
-            civilian = civjobs,
-        }
     end
+
+    multijobs = {
+        whitelist = whitelistedjobs,
+        civilian = civjobs,
+    }
     cb(multijobs)
 end)
 

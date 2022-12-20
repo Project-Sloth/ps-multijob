@@ -1,11 +1,11 @@
 {
   "name": "svelte-source",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
+    "build": "pnpm check && vite build",
     "preview": "vite preview --host",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest",

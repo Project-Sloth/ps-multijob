@@ -26,7 +26,7 @@ export function EventHandler() {
   onDestroy(() => window.removeEventListener("message", mainEvent));
 }
 
-export function handleKeyUp(event) {
+export function handleKeyUp(event: KeyboardEvent) {
   const charCode = event.key;
   if (charCode == "Escape") {
   }

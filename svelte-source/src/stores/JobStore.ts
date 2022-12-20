@@ -1,6 +1,6 @@
 import { writable, Writable, get } from "svelte/store";
 import fetchNUI from '../utils/fetch';
-import type { Job, JobManifest, side } from '../types/types';
+import type { Job, JobManifest, side, nuiUpdateJobMessage } from '../types/types';
 import PanelStore from "./PanelStore";
 
 export interface nuiOpenMessage {
@@ -14,14 +14,6 @@ interface JobState {
   jobManifest: Writable<JobManifest>;
   activeJob: Writable<string>;
   onDuty: Writable<boolean>;
-}
-
-interface nuiUpdateJobMessage {
-  name: string;
-  onDuty: boolean;
-  gradeLabel: string;
-  grade: number;
-  payment: number;
 }
 
 const store = () => {
@@ -42,7 +34,7 @@ const store = () => {
       });
       // Remove job from list
       JobStore.jobManifest.update((state) => {
-        state[category] = state[category].filter((element) => element.name != nuiName);
+        state[category] = state[category].filter((element: Job) => element.name != nuiName);
         return state;
       });
     },
@@ -62,25 +54,34 @@ const store = () => {
         function updateJob(kind: "whitelist" | "civilian", index: number) {
           let changeJob = state[kind][index];
           changeJob.grade = data.grade;
-          changeJob.grade_label = data.gradeLabel;
-          changeJob.salary = data.payment;
+          changeJob.gradeLabel = data.gradeLabel;
+          changeJob.salary = data.salary;
+        }
+
+        function newJob(): Job {
+          return {
+            name: data.name,
+            label: data.label,
+            description: data.description,
+            salary: data.salary,
+            gradeLabel: data.gradeLabel,
+            grade: data.grade,
+            active: 0,
+            icon: data.icon,
+          }
         }
 
         let findSameName = (job: Job) => {
           return job.name == data.name
         }
-        
-        let index = state.civilian?.findIndex(findSameName);
+
+        const accessString: "civilian" | "whitelist" = data.isWhitelist ? "whitelist" : "civilian";
+        let index = state[accessString]?.findIndex(findSameName);
 
         if (index != -1) {
-          updateJob("civilian", index);
-          return state;
-        }
-
-        index = state.whitelist?.findIndex(findSameName);
-
-        if (index != -1) {
-          updateJob("whitelist", index);
+          updateJob(accessString, index);
+        } else {
+          state[accessString] = [...state[accessString], newJob()]
         }
 
         return state;

@@ -18,7 +18,7 @@
 	<div class="max-h-screen overflow-y-auto px-[28px] pb-20">
 		{#each jobArray as job (job.name)}
 			<JobCard name={job.label} nuiName={job.name} nuiRank={job.grade} icon={job.icon} description={job.description}
-				salary={job.salary} rank={job.grade_label} active={job.active} category={panelName}/>
+				salary={job.salary} rank={job.gradeLabel} active={job.active} category={panelName}/>
 		{/each}
 	</div>
 </main>

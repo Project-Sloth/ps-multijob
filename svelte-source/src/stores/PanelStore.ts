@@ -36,8 +36,8 @@ const store = () => {
   }
 
   const methods = {
-    handleKeyUp(data) {
-      if (data.key == "Escape") {
+    handleKeyUp(event: KeyboardEvent) {
+      if (event.key == "Escape") {
         methods.setShow(false);
         fetchNUI("closemenu", null);
       }

@@ -3,10 +3,15 @@ export interface Job {
   label: string;
   description: string;
   salary: number;
-  grade_label: string;
+  gradeLabel: string;
   grade: number;
   active: number;
   icon: string;
+}
+
+export interface nuiUpdateJobMessage extends Omit<Job, "active"> {
+  isWhitelist: boolean;
+  onDuty: boolean;
 }
 
 export interface JobManifest {
