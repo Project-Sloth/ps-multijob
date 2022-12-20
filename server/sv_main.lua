@@ -188,7 +188,8 @@ RegisterNetEvent('QBCore:Server:OnJobUpdate', function(source, newJob)
         amount = amount + 1
     end
     if amount < Config.MaxJobs and not Config.IgnoredJobs[setjob.name] then
-        if not jobs[setjob.name] then
+        local foundOldJob = jobs[setjob.name]
+        if not foundOldJob or foundOldJob ~= setjob.grade.level then
             AddJob(Player.PlayerData.citizenid, setjob.name, setjob.grade.level)
         end
     end
