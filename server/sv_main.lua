@@ -43,12 +43,21 @@ local function RemoveJob(citizenid, job, rgrade)
     local jobs = GetJobs(citizenid)
     jobs[job] = nil
     local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
+    
+    -- Since we removed a job, put player in a new job
+    local foundNewJob = false
     if Player.PlayerData.job.name == job then
         for k,v in pairs(jobs) do
             Player.Functions.SetJob(k,v)
+            foundNewJob = true
             break
         end
     end
+
+    if not foundNewJob then
+        Player.Functions.SetJob("unemployed", 0)
+    end
+
     MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
         citizenid = citizenid,
         jobdata = json.encode(jobs),

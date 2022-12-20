@@ -24,7 +24,7 @@
 	<main class={"min-h-screen flex"+($side == "right" ? " justify-end ":" ")+(DebugMode ? "bg-dark-200": "bg-transparent")}>
 		{#if $side == "right"}
 			{#if $panelActive != ""}
-				<div in:fly="{{x: 500, duration: 500}}" out:fly="{{x: 500, duration: 500}}">
+				<div in:fly|local="{{x: 500, duration: 500}}" out:fly|local="{{x: 500, duration: 500}}">
 					<CategoryMenu jobArray={$jobManifest[$panelActive] || []} panelName={$panelActive}/>
 				</div>
 			{/if}
@@ -32,7 +32,7 @@
 		{:else}
 			<NavBar side={$side}/>
 			{#if $panelActive != ""}
-				<div in:fly="{{x: -500, duration: 500}}" out:fly="{{x: -500, duration: 500}}">
+				<div in:fly|local="{{x: -500, duration: 500}}" out:fly|local="{{x: -500, duration: 500}}">
 					<CategoryMenu jobArray={$jobManifest[$panelActive] || []} panelName={$panelActive}/>
 				</div>
 			{/if}
