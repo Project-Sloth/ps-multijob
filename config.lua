@@ -4,6 +4,10 @@ Config = Config or {}
 Config.Side = "right"
 
 Config.MaxJobs = 3
+Config.CharacterMaxJobs = {
+	-- ["IZK73414"] = 5,
+}
+
 Config.IgnoredJobs = {
 	["unemployed"] = true,
 }
