@@ -198,7 +198,7 @@ RegisterNetEvent('QBCore:Server:OnJobUpdate', function(source, newJob)
         amount = amount + 1
     end
 
-    local maxJobs = Config.MaxJobs
+    local maxJobs = Config.CharacterMaxJobs[Player.PlayerData.citizenid] or Config.MaxJobs
     if QBCore.Functions.HasPermission(source, "admin") then
         maxJobs = math.huge
     end
