@@ -6,7 +6,7 @@ A script designed with a sleek and modern design for being able to display your 
 # Features
 * Configurable ignore certain jobs. 
 * Configurable keybind to open the job menu - J by default. 
-* Configurable max jobs per citizen ID.
+* Configurable max jobs per citizen ID. Unlimited jobs for players with the 'admin' permission. 
 * Configurable white list jobs.
 * Configurable descriptions per job.
 * Configurable side (left or right) of the screen you want the ui to show on. Right side by default. (see Config)
