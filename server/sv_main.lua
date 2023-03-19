@@ -178,14 +178,14 @@ end)
 
 -- QBCORE EVENTS
 
-RegisterNetEvent("qb-bossmenu:server:FireEmployee", function(target)
-    local source = source
-    local Player = QBCore.Functions.GetPlayer(source)
-    if not Player.PlayerData.job.isboss then return end
-    local Employee = QBCore.Functions.GetPlayerByCitizenId(target)
-    if target ~= Player.PlayerData.citizenid then
-        RemoveJob(target, Employee.PlayerData.job.name, Employee.PlayerData.job.grade.level)
-    end
+RegisterNetEvent('ps-multijob:server:removeJob', function(targetCitizenId)
+    MySQL.Async.execute('DELETE FROM multijobs WHERE citizenid = ?', { targetCitizenId }, function(affectedRows)
+        if affectedRows > 0 then
+            print('Removed job: ' .. targetCitizenId)
+        else
+            print('Cannot remove job: ' .. targetCitizenId)
+        end
+    end)
 end)
 
 RegisterNetEvent('QBCore:Server:OnJobUpdate', function(source, newJob)
