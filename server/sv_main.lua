@@ -23,7 +23,7 @@ local function GetJobs(citizenid)
     end)
     return Citizen.Await(p)
 end
-    
+
 local function AddJob(citizenid, job, grade)
     local jobs = GetJobs(citizenid)
     for ignored in pairs(Config.IgnoredJobs) do
@@ -43,7 +43,7 @@ local function RemoveJob(citizenid, job, rgrade)
     local jobs = GetJobs(citizenid)
     jobs[job] = nil
     local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
-    
+
     -- Since we removed a job, put player in a new job
     local foundNewJob = false
     if Player.PlayerData.job.name == job then
@@ -210,3 +210,7 @@ RegisterNetEvent('QBCore:Server:OnJobUpdate', function(source, newJob)
         end
     end
 end)
+
+exports("GetJobs", GetJobs)
+exports("AddJob", AddJob)
+exports("RemoveJob", RemoveJob)
