@@ -8,7 +8,7 @@ local function GetJobs(citizenid)
         if jobs[1] and jobs ~= "[]" then
             jobs = json.decode(jobs[1].jobdata)
         else
-            local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
+            local Player = QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
             local temp = {}
             if not Config.IgnoredJobs[Player.PlayerData.job.name] then
                 temp[Player.PlayerData.job.name] = Player.PlayerData.job.grade.level
@@ -39,23 +39,59 @@ local function AddJob(citizenid, job, grade)
     })
 end
 
+local function UpdatePlayerJob(Player, job, grade)
+    if Player.PlayerData.source ~= nil then
+        Player.Functions.SetJob(job,grade)
+    else -- player is offline
+        local sharedJobData = QBCore.Shared.Jobs[job]
+        if sharedJobData == nil then return end
+
+        local sharedGradeData = sharedJobData.grades[grade]
+        if sharedGradeData == nil then return end
+
+        local isBoss = false
+        if sharedGradeData.isboss then isBoss = true end
+
+        MySQL.update.await("update players set job = @jobData where citizenid = @citizenid", {
+            jobData = json.encode({
+                label = sharedJobData.label,
+                name = job,
+                isboss = isBoss,
+                onduty = sharedJobData.defaultDuty,
+                payment = sharedGradeData.payment,
+                grade = {
+                    name = sharedGradeData.name,
+                    level = grade,
+                },
+            }),
+            citizenid = Player.PlayerData.citizenid
+        })
+    end
+end
+
 local function RemoveJob(citizenid, job, rgrade)
     local jobs = GetJobs(citizenid)
     jobs[job] = nil
     local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
-    
+
+    if Player == nil then
+        Player = QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
+    end
+
+    if Player == nil then return end
+
     -- Since we removed a job, put player in a new job
     local foundNewJob = false
     if Player.PlayerData.job.name == job then
         for k,v in pairs(jobs) do
-            Player.Functions.SetJob(k,v)
+            UpdatePlayerJob(Player, k,v)
             foundNewJob = true
             break
         end
     end
 
     if not foundNewJob then
-        Player.Functions.SetJob("unemployed", 0)
+        UpdatePlayerJob(Player, "unemployed", 0)
     end
 
     MySQL.insert('INSERT INTO multijobs (citizenid, jobdata) VALUES (:citizenid, :jobdata) ON DUPLICATE KEY UPDATE jobdata = :jobdata', {
