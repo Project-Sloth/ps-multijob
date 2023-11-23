@@ -69,9 +69,7 @@ local function UpdatePlayerJob(Player, job, grade)
     end
 end
 
-local function RemoveJob(citizenid, job, rgrade)
-    local jobs = GetJobs(citizenid)
-    jobs[job] = nil
+local function RemoveJob(citizenid, job)
     local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
 
     if Player == nil then
@@ -79,6 +77,9 @@ local function RemoveJob(citizenid, job, rgrade)
     end
 
     if Player == nil then return end
+
+    local jobs = GetJobs(citizenid)
+    jobs[job] = nil
 
     -- Since we removed a job, put player in a new job
     local foundNewJob = false
