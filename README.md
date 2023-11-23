@@ -30,40 +30,43 @@ A script designed with a sleek and modern design for being able to display your 
 
 1. Find the following event
 
-```lua
-qb-bossmenu:server:FireEmployee
-```
+    ```txt
+    qb-bossmenu:server:FireEmployee
+    ```
 
 2. Insert the TriggerEvent right under the notification for 'Employee Fired!'. The TriggerEvent should be added twice, once near line 174 and once near line 199.
 
-```lua
-TriggerClientEvent('QBCore:Notify', src, "Employee fired!", "success")
-TriggerEvent('ps-multijob:server:removeJob', target)
-```
+    ```lua
+    TriggerClientEvent('QBCore:Notify', src, "Employee fired!", "success")
+    TriggerEvent('ps-multijob:server:removeJob', target)
+    ```
 
 ## Usage
 
 ### Serversided Exports
 
 * GetJobs(citizenid)
+
     Example usage:
 
     ```lua
-        local jobs = exports["ps-multijob"]:GetJobs("citizenid here")
+    local jobs = exports["ps-multijob"]:GetJobs("citizenid here")
     ```
 
 * AddJob(citizenid, job, grade)
+
     Example usage:
 
     ```lua
-        exports["ps-multijob"]:AddJob("citizenid here", "police", 0)
+    exports["ps-multijob"]:AddJob("citizenid here", "police", 0)
     ```
 
 * RemoveJob(citizenid, job)
+
     Example usage:
 
     ```lua
-        exports["ps-multijob"]:RemoveJob("citizenid here", "police")
+    exports["ps-multijob"]:RemoveJob("citizenid here", "police")
     ```
 
 ## Credits
