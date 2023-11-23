@@ -23,6 +23,7 @@ local function GetJobs(citizenid)
     end)
     return Citizen.Await(p)
 end
+exports("GetJobs", GetJobs)
     
 local function AddJob(citizenid, job, grade)
     local jobs = GetJobs(citizenid)
@@ -38,6 +39,7 @@ local function AddJob(citizenid, job, grade)
         jobdata = json.encode(jobs),
     })
 end
+exports("AddJob", AddJob)
 
 local function UpdatePlayerJob(Player, job, grade)
     if Player.PlayerData.source ~= nil then
@@ -100,6 +102,7 @@ local function RemoveJob(citizenid, job)
         jobdata = json.encode(jobs),
     })
 end
+exports("RemoveJob", RemoveJob)
 
 QBCore.Commands.Add('removejob', 'Remove Multi Job (Admin Only)', { { name = 'id', help = 'ID of player' }, { name = 'job', help = 'Job Name' }, { name = 'grade', help = 'Job Grade' } }, false, function(source, args)
     local source = source
