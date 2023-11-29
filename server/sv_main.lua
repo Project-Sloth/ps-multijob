@@ -148,7 +148,7 @@ QBCore.Commands.Add('addjob', 'Add Multi Job (Admin Only)', { { name = 'id', hel
     end
 end, 'admin')
 
-QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
+QBCore.Functions.CreateCallback("ps-multijob:getJobs", function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
     local jobs = GetJobs(Player.PlayerData.citizenid)
     local multijobs = {}
@@ -157,6 +157,7 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
     local active = {}
     local getjobs = {}
     local Players = QBCore.Functions.GetPlayers()
+
     for i = 1, #Players, 1 do
         local xPlayer = QBCore.Functions.GetPlayer(Players[i])
         active[xPlayer.PlayerData.job.name] = 0
@@ -164,25 +165,27 @@ QBCore.Functions.CreateCallback("ps-multijob:getJobs",function(source, cb)
             active[xPlayer.PlayerData.job.name] = active[xPlayer.PlayerData.job.name] + 1
         end
     end
+
     for job, grade in pairs(jobs) do
-        local online = active[job]
-        if online == nil then
-            online = 0
-        end
-        getjobs = {
-            name = job,
-            grade = grade,
-            description = Config.Descriptions[job],
-            icon = Config.FontAwesomeIcons[job],
-            label = QBCore.Shared.Jobs[job].label,
-            gradeLabel = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
-            salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
-            active = online,
-        }
-        if Config.WhitelistJobs[job] then
-            whitelistedjobs[#whitelistedjobs+1] = getjobs
+        if QBCore.Shared.Jobs[job] == nil then
+            print("The job '" .. job .. "' has been removed and is not present in your QBCore jobs. Remove it from the multijob SQL or add it back to your qbcore jobs.lua.")
         else
-            civjobs[#civjobs+1] = getjobs
+            local online = active[job] or 0
+            getjobs = {
+                name = job,
+                grade = grade,
+                description = Config.Descriptions[job],
+                icon = Config.FontAwesomeIcons[job],
+                label = QBCore.Shared.Jobs[job].label,
+                gradeLabel = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
+                salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
+                active = online,
+            }
+            if Config.WhitelistJobs[job] then
+                whitelistedjobs[#whitelistedjobs+1] = getjobs
+            else
+                civjobs[#civjobs+1] = getjobs
+            end
         end
     end
 
