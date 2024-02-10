@@ -47,13 +47,13 @@ local function UpdatePlayerJob(Player, job, grade)
     else -- player is offline
         local sharedJobData = QBCore.Shared.Jobs[job]
         if sharedJobData == nil then return end
-    
+
         local sharedGradeData = sharedJobData.grades[grade]
         if sharedGradeData == nil then return end
-    
+
         local isBoss = false
         if sharedGradeData.isboss then isBoss = true end
-    
+
         MySQL.update.await("update players set job = @jobData where citizenid = @citizenid", {
             jobData = json.encode({
                 label = sharedJobData.label,
