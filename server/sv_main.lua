@@ -41,6 +41,33 @@ local function AddJob(citizenid, job, grade)
 end
 exports("AddJob", AddJob)
 
+-- utility function, dont export
+local function UpdateOfflineJobData(citizenid, job, grade)
+    local sharedJobData = QBCore.Shared.Jobs[job]
+    if sharedJobData == nil then return end
+
+    local sharedGradeData = sharedJobData.grades[grade]
+    if sharedGradeData == nil then return end
+
+    local isBoss = false
+    if sharedGradeData.isboss then isBoss = true end
+
+    MySQL.update.await("update players set job = @jobData where citizenid = @citizenid", {
+        jobData = json.encode({
+            label = sharedJobData.label,
+            name = job,
+            isboss = isBoss,
+            onduty = sharedJobData.defaultDuty,
+            payment = sharedGradeData.payment,
+            grade = {
+                name = sharedGradeData.name,
+                level = grade,
+            },
+        }),
+        citizenid = Player.PlayerData.citizenid
+    })
+end
+
 local function UpdatePlayerJob(Player, job, grade)
     if type(Player) == "string" then
         Player = QBCore.Functions.GetOfflinePlayerByCitizenId(Player)
@@ -53,32 +80,40 @@ local function UpdatePlayerJob(Player, job, grade)
     if Player.PlayerData.source ~= nil then
         Player.Functions.SetJob(job,grade)
     else -- player is offline
-        local sharedJobData = QBCore.Shared.Jobs[job]
-        if sharedJobData == nil then return end
-
-        local sharedGradeData = sharedJobData.grades[grade]
-        if sharedGradeData == nil then return end
-
-        local isBoss = false
-        if sharedGradeData.isboss then isBoss = true end
-
-        MySQL.update.await("update players set job = @jobData where citizenid = @citizenid", {
-            jobData = json.encode({
-                label = sharedJobData.label,
-                name = job,
-                isboss = isBoss,
-                onduty = sharedJobData.defaultDuty,
-                payment = sharedGradeData.payment,
-                grade = {
-                    name = sharedGradeData.name,
-                    level = grade,
-                },
-            }),
-            citizenid = Player.PlayerData.citizenid
-        })
+        UpdateOfflineJobData(Player.PlayerData.citizenid, job, grade)
     end
 end
 exports("UpdatePlayerJob", UpdatePlayerJob)
+
+local function UpdateJobRank(citizenid, job, grade)
+    local Player = QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
+    if Player == nil then
+        return
+    end
+
+    local jobs = GetJobs(citizenid)
+    if jobs[job] == nil then
+        return
+    end
+    
+    jobs[job] = grade
+    
+    MySQL.update.await("update multijobs set jobdata = :jobdata where citizenid = :citizenid", {
+        citizenid = citizenid,
+        jobdata = json.encode(jobs),
+    })
+    
+    -- if the current job matches, then update
+    if Player.PlayerData.job.name ~= job then
+        return
+    end
+    if Player.PlayerData.source ~= nil then
+        Player.Functions.SetJob(job, grade)
+    else -- player is offline
+        UpdateOfflineJobData(Player.PlayerData.citizenid, job, grade)
+    end
+end
+exports("UpdateJobRank", UpdateJobRank)
 
 local function RemoveJob(citizenid, job)
     local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
