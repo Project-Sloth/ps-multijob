@@ -42,6 +42,14 @@ end
 exports("AddJob", AddJob)
 
 local function UpdatePlayerJob(Player, job, grade)
+    if type(Player) == "string" then
+        Player = QBCore.Functions.GetOfflinePlayerByCitizenId(Player)
+    end
+
+    if Player == nil then
+        return
+    end
+
     if Player.PlayerData.source ~= nil then
         Player.Functions.SetJob(job,grade)
     else -- player is offline
@@ -70,6 +78,7 @@ local function UpdatePlayerJob(Player, job, grade)
         })
     end
 end
+exports("UpdatePlayerJob", UpdatePlayerJob)
 
 local function RemoveJob(citizenid, job)
     local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid)
