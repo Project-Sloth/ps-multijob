@@ -129,13 +129,13 @@ local function RemoveJob(citizenid, job)
 end
 exports("RemoveJob", RemoveJob)
 
-QBCore.Commands.Add('removejob', 'Remove Multi Job (Admin Only)', { { name = 'id', help = 'ID of player' }, { name = 'job', help = 'Job Name' }, { name = 'grade', help = 'Job Grade' } }, false, function(source, args)
+QBCore.Commands.Add('removejob', 'Remove Multi Job (Admin Only)', { { name = 'id', help = 'ID of player' }, { name = 'job', help = 'Job Name' } }, false, function(source, args)
     local source = source
     if source ~= 0 then
         if args[1] then
             local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
             if Player then
-                if args[2]and args[3] then
+                if args[2] then
                     RemoveJob(Player.PlayerData.citizenid, args[2])
                 else
                     TriggerClientEvent("QBCore:Notify", source, "Wrong usage!")
