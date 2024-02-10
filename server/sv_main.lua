@@ -41,49 +41,35 @@ local function AddJob(citizenid, job, grade)
 end
 exports("AddJob", AddJob)
 
--- utility function, dont export
-local function UpdateOfflineJobData(citizenid, job, grade)
-    local sharedJobData = QBCore.Shared.Jobs[job]
-    if sharedJobData == nil then return end
-
-    local sharedGradeData = sharedJobData.grades[grade]
-    if sharedGradeData == nil then return end
-
-    local isBoss = false
-    if sharedGradeData.isboss then isBoss = true end
-
-    MySQL.update.await("update players set job = @jobData where citizenid = @citizenid", {
-        jobData = json.encode({
-            label = sharedJobData.label,
-            name = job,
-            isboss = isBoss,
-            onduty = sharedJobData.defaultDuty,
-            payment = sharedGradeData.payment,
-            grade = {
-                name = sharedGradeData.name,
-                level = grade,
-            },
-        }),
-        citizenid = Player.PlayerData.citizenid
-    })
-end
-
 local function UpdatePlayerJob(Player, job, grade)
-    if type(Player) == "string" then
-        Player = QBCore.Functions.GetOfflinePlayerByCitizenId(Player)
-    end
-
-    if Player == nil then
-        return
-    end
-
     if Player.PlayerData.source ~= nil then
         Player.Functions.SetJob(job,grade)
     else -- player is offline
-        UpdateOfflineJobData(Player.PlayerData.citizenid, job, grade)
+        local sharedJobData = QBCore.Shared.Jobs[job]
+        if sharedJobData == nil then return end
+    
+        local sharedGradeData = sharedJobData.grades[grade]
+        if sharedGradeData == nil then return end
+    
+        local isBoss = false
+        if sharedGradeData.isboss then isBoss = true end
+    
+        MySQL.update.await("update players set job = @jobData where citizenid = @citizenid", {
+            jobData = json.encode({
+                label = sharedJobData.label,
+                name = job,
+                isboss = isBoss,
+                onduty = sharedJobData.defaultDuty,
+                payment = sharedGradeData.payment,
+                grade = {
+                    name = sharedGradeData.name,
+                    level = grade,
+                },
+            }),
+            citizenid = Player.PlayerData.citizenid
+        })
     end
 end
-exports("UpdatePlayerJob", UpdatePlayerJob)
 
 local function UpdateJobRank(citizenid, job, grade)
     local Player = QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
@@ -104,13 +90,8 @@ local function UpdateJobRank(citizenid, job, grade)
     })
     
     -- if the current job matches, then update
-    if Player.PlayerData.job.name ~= job then
-        return
-    end
-    if Player.PlayerData.source ~= nil then
-        Player.Functions.SetJob(job, grade)
-    else -- player is offline
-        UpdateOfflineJobData(Player.PlayerData.citizenid, job, grade)
+    if Player.PlayerData.job.name == job then
+        UpdatePlayerJob(Player, job, grade)
     end
 end
 exports("UpdateJobRank", UpdateJobRank)
@@ -155,7 +136,7 @@ QBCore.Commands.Add('removejob', 'Remove Multi Job (Admin Only)', { { name = 'id
             local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
             if Player then
                 if args[2]and args[3] then
-                    RemoveJob(Player.PlayerData.citizenid, args[2], args[3])
+                    RemoveJob(Player.PlayerData.citizenid, args[2])
                 else
                     TriggerClientEvent("QBCore:Notify", source, "Wrong usage!")
                 end
@@ -260,7 +241,7 @@ end)
 RegisterNetEvent("ps-multijob:removeJob",function(job, grade)
     local source = source
     local Player = QBCore.Functions.GetPlayer(source)
-    RemoveJob(Player.PlayerData.citizenid, job, grade)
+    RemoveJob(Player.PlayerData.citizenid, job)
 end)
 
 -- QBCORE EVENTS
