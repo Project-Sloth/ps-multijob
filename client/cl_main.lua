@@ -67,7 +67,7 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     })
 end)
 
-RegisterCommand("jobmenu", OpenUI)
+RegisterCommand("jobmenu", OpenUI, false)
 
 RegisterKeyMapping('jobmenu', "Show Job Management", "keyboard", "J")
 

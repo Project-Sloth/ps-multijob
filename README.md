@@ -61,6 +61,13 @@ A script designed with a sleek and modern design for being able to display your 
     exports["ps-multijob"]:AddJob("citizenid here", "police", 0)
     ```
 
+* UpdateJobRank(citizenid, job, grade)
+    Example usage:
+
+    ```lua
+    exports["ps-multijob"]:UpdateJobRank("citizenid here", "police", 3)
+    ```
+
 * RemoveJob(citizenid, job)
 
     Example usage:
