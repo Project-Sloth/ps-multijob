@@ -129,6 +129,28 @@ local function RemoveJob(citizenid, job)
 end
 exports("RemoveJob", RemoveJob)
 
+local function getEmployees(jobName)
+    local p = promise.new()
+    MySQL.Async.fetchAll("SELECT citizenid, jobdata FROM multijobs", {}, function(results)
+        local employees = {}
+        for _, row in pairs(results) do
+            local jobs = json.decode(row.jobdata)
+            if jobs[jobName] then
+                local Player = QBCore.Functions.GetOfflinePlayerByCitizenId(row.citizenid)
+                if Player then
+                    employees[#employees + 1] = {
+                        citizenid = row.citizenid,
+                        grade = jobs[jobName]
+                    }
+                end
+            end
+        end
+        p:resolve(employees)
+    end)
+    return Citizen.Await(p)
+end
+exports("getEmployees", getEmployees)
+
 QBCore.Commands.Add('removejob', 'Remove Multi Job (Admin Only)', { { name = 'id', help = 'ID of player' }, { name = 'job', help = 'Job Name' } }, false, function(source, args)
     local source = source
     if source ~= 0 then
