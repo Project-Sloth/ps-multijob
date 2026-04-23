@@ -196,51 +196,109 @@ QBCore.Commands.Add('addjob', 'Add Multi Job (Admin Only)', { { name = 'id', hel
 end, 'admin')
 
 QBCore.Functions.CreateCallback("ps-multijob:getJobs", function(source, cb)
-    local Player = QBCore.Functions.GetPlayer(source)
-    local jobs = GetJobs(Player.PlayerData.citizenid)
-    local multijobs = {}
-    local whitelistedjobs = {}
-    local civjobs = {}
-    local active = {}
-    local getjobs = {}
-    local Players = QBCore.Functions.GetPlayers()
+    if Config.Core == 'qbox' then 
+        local Player = QBCore.Functions.GetPlayer(source)
+        if not Player then return cb({ whitelist = {}, civilian = {} }) end
 
-    for i = 1, #Players, 1 do
-        local xPlayer = QBCore.Functions.GetPlayer(Players[i])
-        active[xPlayer.PlayerData.job.name] = 0
-        if active[xPlayer.PlayerData.job.name] and xPlayer.PlayerData.job.onduty then
-            active[xPlayer.PlayerData.job.name] = active[xPlayer.PlayerData.job.name] + 1
-        end
-    end
+        local jobs = GetJobs(Player.PlayerData.citizenid)
+        local multijobs = {
+            whitelist = {},
+            civilian = {}
+        }
+        local active = {}
 
-    for job, grade in pairs(jobs) do
-        if QBCore.Shared.Jobs[job] == nil then
-            print("The job '" .. job .. "' has been removed and is not present in your QBCore jobs. Remove it from the multijob SQL or add it back to your qbcore jobs.lua.")
-        else
-            local online = active[job] or 0
-            getjobs = {
-                name = job,
-                grade = grade,
-                description = Config.Descriptions[job],
-                icon = Config.FontAwesomeIcons[job],
-                label = QBCore.Shared.Jobs[job].label,
-                gradeLabel = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
-                salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
-                active = online,
-            }
-            if Config.WhitelistJobs[job] then
-                whitelistedjobs[#whitelistedjobs+1] = getjobs
-            else
-                civjobs[#civjobs+1] = getjobs
+        local Players = QBCore.Functions.GetPlayers()
+        for _, playerId in pairs(Players) do
+            local xPlayer = QBCore.Functions.GetPlayer(playerId)
+            if xPlayer then
+                local jobName = xPlayer.PlayerData.job.name
+                if not active[jobName] then
+                    active[jobName] = 0
+                end
+                if xPlayer.PlayerData.job.onduty then
+                    active[jobName] = active[jobName] + 1
+                end
             end
         end
-    end
 
-    multijobs = {
-        whitelist = whitelistedjobs,
-        civilian = civjobs,
-    }
-    cb(multijobs)
+        for job, grade in pairs(jobs) do
+            local jobData = QBCore.Shared.Jobs[job]
+            if not jobData then
+                print("^1[ps-multijob] The job '" .. job .. "' is missing from Shared.Jobs. Remove it from the multijob SQL or add it back to jobs.lua.^0")
+            else
+                local jobGrade = jobData.grades[tostring(grade)] or jobData.grades[grade]
+                -- local jobGrade = jobData.grades[tostring(grade)]
+                if jobGrade then
+                    local jobInfo = {
+                        name = job,
+                        grade = grade,
+                        description = Config.Descriptions[job] or "",
+                        icon = Config.FontAwesomeIcons[job] or "",
+                        label = jobData.label or job,
+                        gradeLabel = jobGrade.name or "Unknown",
+                        salary = jobGrade.payment or 0,
+                        active = active[job] or 0,
+                    }
+
+                    if Config.WhitelistJobs[job] then
+                        table.insert(multijobs.whitelist, jobInfo)
+                    else
+                        table.insert(multijobs.civilian, jobInfo)
+                    end
+                else
+                    print("^1[ps-multijob] Grade " .. grade .. " not found for job '" .. job .. "'.^0")
+                end
+            end
+        end
+
+        cb(multijobs)
+    elseif Config.Core == 'qb-core' then 
+        local Player = QBCore.Functions.GetPlayer(source)
+        local jobs = GetJobs(Player.PlayerData.citizenid)
+        local multijobs = {}
+        local whitelistedjobs = {}
+        local civjobs = {}
+        local active = {}
+        local getjobs = {}
+        local Players = QBCore.Functions.GetPlayers()
+
+        for i = 1, #Players, 1 do
+            local xPlayer = QBCore.Functions.GetPlayer(Players[i])
+            active[xPlayer.PlayerData.job.name] = 0
+            if active[xPlayer.PlayerData.job.name] and xPlayer.PlayerData.job.onduty then
+                active[xPlayer.PlayerData.job.name] = active[xPlayer.PlayerData.job.name] + 1
+            end
+        end
+
+        for job, grade in pairs(jobs) do
+            if QBCore.Shared.Jobs[job] == nil then
+                print("The job '" .. job .. "' has been removed and is not present in your QBCore jobs. Remove it from the multijob SQL or add it back to your qbcore jobs.lua.")
+            else
+                local online = active[job] or 0
+                getjobs = {
+                    name = job,
+                    grade = grade,
+                    description = Config.Descriptions[job],
+                    icon = Config.FontAwesomeIcons[job],
+                    label = QBCore.Shared.Jobs[job].label,
+                    gradeLabel = QBCore.Shared.Jobs[job].grades[tostring(grade)].name,
+                    salary = QBCore.Shared.Jobs[job].grades[tostring(grade)].payment,
+                    active = online,
+                }
+                if Config.WhitelistJobs[job] then
+                    whitelistedjobs[#whitelistedjobs+1] = getjobs
+                else
+                    civjobs[#civjobs+1] = getjobs
+                end
+            end
+        end
+
+        multijobs = {
+            whitelist = whitelistedjobs,
+            civilian = civjobs,
+        }
+        cb(multijobs)
+    end
 end)
 
 RegisterNetEvent("ps-multijob:changeJob",function(cjob, cgrade)
